@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Foodor Checkout Page</title>
+    <link rel="icon" type="image/png" href="assets/images/favicon.png" />
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="assets/css/owl.carousel.min.css" />
+    <link rel="stylesheet" href="assets/css/all.min.css" />
+    <link rel="stylesheet" href="assets/css/aos.css" />
+    <link rel="stylesheet" href="assets/css/jquery.fancybox.min.css" />
+    <link rel="stylesheet" href="assets/css/nice-select.css" />
+    <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+
+<body>
+
+    <!-- Preloader start-->
+    <div id="preloader">
+        <div class="preloader">
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+    <!-- Preloader end  -->
+
+    <!-- Header Start -->
+    <header class="header">
+        <div class="primary-navigation sticky-header">
+            <div class="container">
+                <nav class="navbar navbar-expand-md  navbar-light">
+                    <a class="navbar-brand pl-5" href="index.html"><img src="assets/images/logo.png" alt="BrandNav"></a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
+                        <ul class="navbar-nav ms-auto">
+                            <li class="nav-item active">
+                                <a class="nav-link" href="index.html">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="about.html">About</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="menu.html">Menu</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                    Pages
+                                    <i class="fas fa-angle-down"></i>
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <li><a class="dropdown-item" href="services.html">Services</a></li>
+                                    <li><a class="dropdown-item" href="register.html">Sign Up</a></li>
+                                    <li><a class="dropdown-item" href="account.html">Account</a></li>
+                                    <li><a class="dropdown-item" href="checkout.html">Checkout</a></li>
+                                    <li><a class="dropdown-item" href="track_order.html">Track Order</a></li>
+                                    <li><a class="dropdown-item" href="blog_details.html">Blog Details</a></li>
+                                    <li> <a class="dropdown-item" href="404.html">Error</a></li>
+                                </ul>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="blog.html">Blog</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="contact.html">Contact</a>
+                            </li>
+                            <li class="nav-item login-item">
+                                <a class="nav-link" href="login.html"><i class="far fa-user"></i>
+                                    Login</a>
+                            </li>
+                            <li class="nav-item mini-cart">
+                                <a href="#" class="nav-link">
+                                    <i class="fas fa-shopping-bag"></i>
+                                    <sup class="cart-quantity">2</sup>
+                                </a>
+                                <div class="mini-cart-box">
+                                    <div class="cart-item">
+                                        <div class="thumb">
+                                            <img class="w-100" src="assets/images/cart2.png" alt="cart-image">
+                                        </div>
+                                        <div class="content">
+                                            <h5 class="title"><a href="#/">Chicken Masala</a></h5>
+                                            <span class="product-quantity">1 ×</span>
+                                            <span class="product-price">$19.00</span>
+                                            <a class="cart-trash"><i class="fa fa-trash"></i></a>
+                                        </div>
+                                    </div>
+                                    <div class="cart-item">
+                                        <div class="thumb">
+                                            <img class="w-100" src="assets/images/cart1.png" alt="cart-image">
+                                        </div>
+                                        <div class="content">
+                                            <h5 class="title"><a href="#/">Chicken Masala</a></h5>
+                                            <span class="product-quantity">2 ×</span>
+                                            <span class="product-price">$20.00</span>
+                                            <a class="cart-trash"><i class="fa fa-trash"></i></a>
+                                        </div>
+                                    </div>
+                                    <div class="cart-total-money">
+                                        <h4>Total: <span class="money">$69.00</span></h4>
+                                    </div>
+                                    <div class="cart-btn">
+                                        <a href="cart.html">View Cart</a>
+                                        <a href="checkout.html">Checkout</a>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+            </div>
+        </div>
+    </header>
+    <!-- Header End -->
+
+    <!-- Start Page Header -->
+    <div class="page-header-wrapper" style="background-image:url(assets/images/header_bg_01.jpg);">
+        <div class="page-header-2" style="background-image:url(assets/images/header_bg_02.png);">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12 mx-auto text-center">
+                        <div class="page-header-container">
+                            <div class="page-header-content">
+                                <h1 class="heading-one">Checkout</h1>
+                                <div class="page-nav">
+                                    <ul>
+                                        <li><a href="#">Home ></a></li>
+                                        <li>Checkout</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Page Header -->
+    <!-- Start page -->
+    <div class="page-wrapper section-ptb">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="page-container">
+                        <!-- Start Popular Items -->
+                        <div class="popular-items-area">
+                            <div class="section-title-3 mb-4">
+                                <h2 class="heading-2">You May Also Like</h2>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="popular-posts-wrapper-2 owl-carousel carousel-style-one">
+                                        <div class="popular-item">
+                                            <div class="card product-card">
+                                                <div class="card-thumb">
+                                                    <a href="#" class="black-overlay"><img
+                                                            src="assets/images/food_01.jpg" class="card-img-top"
+                                                            alt="food" /></a>
+                                                    <a href="#" class="sm-btn"><i class="fas fa-plus"></i> Add To
+                                                        Bag</a>
+                                                </div>
+                                                <div class="card-body p-4">
+                                                    <h6 class="heading-6"><a href="#">Chicken And Olive Pizza</a></h6>
+                                                    <div class="card-meta d-flex py-2">
+                                                        <div class="product-rating">
+                                                            <span class="far fa-star"></span>
+                                                            <span class="rating-point">4.5</span>
+                                                        </div>
+                                                        <div class="product-price pl-4">
+                                                            <span>$19.00</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="popular-item">
+                                            <div class="card product-card">
+                                                <div class="card-thumb">
+                                                    <a href="#"><img src="assets/images/food_02.jpg"
+                                                            class="card-img-top" alt="food" /></a>
+                                                    <a href="#" class="sm-btn"><i class="fas fa-plus"></i> Add To
+                                                        Bag</a>
+                                                </div>
+                                                <div class="card-body p-4">
+                                                    <h6 class="heading-6"><a href="#">Chicken And Olive Pizza</a></h6>
+                                                    <div class="card-meta d-flex py-2">
+                                                        <div class="product-rating">
+                                                            <span class="far fa-star"></span>
+                                                            <span class="rating-point">4.5</span>
+                                                        </div>
+                                                        <div class="product-price pl-4">
+                                                            <span>$19.00</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="popular-item">
+                                            <div class="card product-card">
+                                                <div class="card-thumb">
+                                                    <a href="#" class="black-overlay"><img
+                                                            src="assets/images/food_03.jpg" class="card-img-top"
+                                                            alt="food" /></a>
+                                                    <a href="#" class="sm-btn"><i class="fas fa-plus"></i> Add To
+                                                        Bag</a>
+                                                </div>
+                                                <div class="card-body p-4">
+                                                    <h6 class="heading-6"><a href="#">Chicken And Olive Pizza</a></h6>
+                                                    <div class="card-meta d-flex py-2">
+                                                        <div class="product-rating">
+                                                            <span class="far fa-star"></span>
+                                                            <span class="rating-point">4.5</span>
+                                                        </div>
+                                                        <div class="product-price pl-4">
+                                                            <span>$19.00</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="popular-item">
+                                            <div class="card product-card">
+                                                <div class="card-thumb">
+                                                    <a href="#" class="black-overlay"><img
+                                                            src="assets/images/food_04.jpg" class="card-img-top"
+                                                            alt="food" /></a>
+                                                    <a href="#" class="sm-btn"><i class="fas fa-plus"></i> Add To
+                                                        Bag</a>
+                                                </div>
+                                                <div class="card-body p-4">
+                                                    <h6 class="heading-6"><a href="#">Chicken And Olive Pizza</a></h6>
+                                                    <div class="card-meta d-flex py-2">
+                                                        <div class="product-rating">
+                                                            <span class="far fa-star"></span>
+                                                            <span class="rating-point">4.5</span>
+                                                        </div>
+                                                        <div class="product-price pl-4">
+                                                            <span>$19.00</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="popular-item">
+                                            <div class="card product-card">
+                                                <div class="card-thumb">
+                                                    <a href="#" class="black-overlay"><img
+                                                            src="assets/images/food_05.jpg" class="card-img-top"
+                                                            alt="food" /></a>
+                                                    <a href="#" class="sm-btn"><i class="fas fa-plus"></i> Add To
+                                                        Bag</a>
+                                                </div>
+                                                <div class="card-body p-4">
+                                                    <h6 class="heading-6"><a href="#">Chicken And Olive Pizza</a></h6>
+                                                    <div class="card-meta d-flex py-2">
+                                                        <div class="product-rating">
+                                                            <span class="far fa-star"></span>
+                                                            <span class="rating-point">4.5</span>
+                                                        </div>
+                                                        <div class="product-price pl-4">
+                                                            <span>$19.00</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="popular-item">
+                                            <div class="card product-card">
+                                                <div class="card-thumb">
+                                                    <a href="#" class="black-overlay"><img
+                                                            src="assets/images/food_06.jpg" class="card-img-top"
+                                                            alt="food" /></a>
+                                                    <a href="#" class="sm-btn"><i class="fas fa-plus"></i> Add To
+                                                        Bag</a>
+                                                </div>
+                                                <div class="card-body p-4">
+                                                    <h6 class="heading-6"><a href="#">Chicken And Olive Pizza</a></h6>
+                                                    <div class="card-meta d-flex py-2">
+                                                        <div class="product-rating">
+                                                            <span class="far fa-star"></span>
+                                                            <span class="rating-point">4.5</span>
+                                                        </div>
+                                                        <div class="product-price pl-4">
+                                                            <span>$19.00</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="popular-item">
+                                            <div class="card product-card">
+                                                <div class="card-thumb">
+                                                    <a href="#" class="black-overlay"><img
+                                                            src="assets/images/food_07.jpg" class="card-img-top"
+                                                            alt="food" /></a>
+                                                    <a href="#" class="sm-btn"><i class="fas fa-plus"></i> Add To
+                                                        Bag</a>
+                                                </div>
+                                                <div class="card-body p-4">
+                                                    <h6 class="heading-6"><a href="#">Chicken And Olive Pizza</a></h6>
+                                                    <div class="card-meta d-flex py-2">
+                                                        <div class="product-rating">
+                                                            <span class="far fa-star"></span>
+                                                            <span class="rating-point">4.5</span>
+                                                        </div>
+                                                        <div class="product-price pl-4">
+                                                            <span>$19.00</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End Popular Items -->
+                        <!-- Start Delivery Address -->
+                        <div class="delivery-address section-ptb">
+                            <div class="section-title-3 mb-5 pb-3">
+                                <h2 class="heading-2">Choose Your Delivery Address</h2>
+                            </div>
+                            <div class="contact-wrapper">
+                                <div class="row">
+                                    <div class="col-lg-6 col-sm-6">
+                                        <div
+                                            class="single-contact d-flex align-items-center shadow p-4 custom-round border">
+                                            <div class="sample-icon mr-2">
+                                                <i class="fas fa-home"></i>
+                                            </div>
+                                            <div class="contact-info">
+                                                <h5 class="heading-5 mb-2">Home</h5>
+                                                <p>Nyay Marg, Bodakdev, Ahmedabad, Gujarat 380054</p>
+                                                <div class="action-btn d-flex align-items-center mt-3">
+                                                    <a href="#" class="default-btn">Deliver Now</a>
+                                                    <p class="mb-0 font-weight-bold ms-3">30 min</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 col-sm-6">
+                                        <div
+                                            class="single-contact d-flex align-items-center shadow p-4 custom-round border">
+                                            <div class="sample-icon mr-2">
+                                                <i class="fas fa-store-alt"></i>
+                                            </div>
+                                            <div class="contact-info">
+                                                <h5 class="heading-5 mb-2">Office</h5>
+                                                <p>Nyay Marg, Bodakdev, Ahmedabad, Gujarat 380054</p>
+                                                <div class="action-btn d-flex align-items-center mt-3">
+                                                    <a href="#" class="default-btn">Deliver Now</a>
+                                                    <p class="mb-0 font-weight-bold ms-3">60 min</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 col-sm-6 mt-4">
+                                        <div
+                                            class="single-contact d-flex align-items-center shadow p-4 custom-round border">
+                                            <div class="sample-icon mr-2">
+                                                <i class="fas fa-map-marker-alt"></i>
+                                            </div>
+                                            <div class="contact-info">
+                                                <h6 class="heading-6 mb-2">Other</h6>
+                                                <p>Nyay Marg, Bodakdev, Ahmedabad, Gujarat 380054</p>
+                                                <div class="action-btn d-flex align-items-center mt-3">
+                                                    <a href="#" class="default-btn">Deliver Now</a>
+                                                    <p class="mb-0 font-weight-bold ms-3">60 min</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 col-sm-6 mt-4">
+                                        <div
+                                            class="single-contact d-flex align-items-center shadow p-4 custom-round border">
+                                            <div class="contact-info big-btn">
+                                                <a href="#deliveryModal" data-bs-toggle="modal"
+                                                    data-target="#deliveryModal"><i class="fas fa-plus"></i> <span>Add
+                                                        New Address</span></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Start Delivery Address -->
+                        <!-- Start Foods Tabs Area -->
+                        <div class="foods-tabs-area">
+                            <div class="section-title-3 mb-4 pb-2">
+                                <h2 class="heading-2">Choose Your Payment Method</h2>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-5 col-sm-4">
+                                    <div class="tabs-lists mt-3">
+                                        <ul class="nav nav-tabs flex-column border-0" id="myTab" role="tablist">
+                                            <li class="nav-item mb-2" role="presentation">
+                                                <a class="nav-link active" id="debitCard-tab" data-bs-toggle="tab"
+                                                    href="#debitCard" role="tab">
+                                                    <span class="tab-icon"><img src="assets/images/debit_card.png"
+                                                            alt="debitCard" /></span> <span
+                                                        class="heading-6">Credit/Debit Card</span>
+                                                </a>
+                                            </li>
+                                            <li class="nav-item mb-2" role="presentation">
+                                                <a class="nav-link" id="pointCard-tab" data-bs-toggle="tab"
+                                                    href="#pointCard" role="tab">
+                                                    <span class="tab-icon"><img src="assets/images/point_card.png"
+                                                            alt="meat" /></span> <span class="heading-6">Point
+                                                        Card</span>
+                                                </a>
+                                            </li>
+                                            <li class="nav-item mb-2" role="presentation">
+                                                <a class="nav-link" id="netbanking-tab" data-bs-toggle="tab"
+                                                    href="#netbanking" role="tab">
+                                                    <span class="tab-icon"><img src="assets/images/netbanking.png"
+                                                            alt="meat" /></span> <span
+                                                        class="heading-6">Netbanking</span>
+                                                </a>
+                                            </li>
+                                            <li class="nav-item mb-2 mb-lg-0" role="presentation">
+                                                <a class="nav-link" id="cashOnDelivery-tab" data-bs-toggle="tab"
+                                                    href="#cashOnDelivery" role="tab">
+                                                    <span class="tab-icon"><img src="assets/images/cash_on_delivery.png"
+                                                            alt="meat" /></span> <span class="heading-6">Cash On
+                                                        Delivery</span>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col-lg-7 col-sm-8 ps-5">
+                                    <div class="tabs-content">
+                                        <div class="tab-content food-tab-content" id="myTabContent">
+                                            <div class="tab-pane fade show active" id="debitCard" role="tabpanel">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="card-info">
+                                                            <h6 class="heading-6 mb-2">Add New Card</h6>
+                                                            <div class="supported-cards my-2">
+                                                                <ul>
+                                                                    <li>We Accept:</li>
+                                                                    <li><img src="assets/images/debit_card.png"
+                                                                            alt="visa" class="img-fluid"></li>
+                                                                    <li><img src="assets/images/master_card.png"
+                                                                            alt="visa" class="img-fluid"></li>
+                                                                    <li><img src="assets/images/discover_card.png"
+                                                                            alt="visa" class="img-fluid"></li>
+                                                                    <li><img src="assets/images/visa_card_02.png"
+                                                                            alt="visa" class="img-fluid"></li>
+                                                                    <li><img src="assets/images/express.png" alt="visa"
+                                                                            class="img-fluid"></li>
+                                                                </ul>
+                                                            </div>
+                                                            <div class="payment-card-form">
+                                                                <form action="#">
+                                                                    <div class="row mt-3">
+                                                                        <div class="col-md-12">
+                                                                            <input type="text" class="form-control"
+                                                                                placeholder="Card Number" ruquired />
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row mt-3">
+                                                                        <div class="col-md-6 mb-3 mb-lg-0">
+                                                                            <input type="text" class="form-control"
+                                                                                placeholder="Enter Valid (MM/YY)"
+                                                                                ruquired />
+                                                                        </div>
+                                                                        <div class="col-md-6">
+                                                                            <input type="text" class="form-control"
+                                                                                placeholder="CVV" />
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row mt-3">
+                                                                        <div class="col-md-12">
+                                                                            <input type="text" class="form-control"
+                                                                                placeholder="Enter The Card Holder Name"
+                                                                                ruquired />
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row mt-3">
+                                                                        <div class="col">
+                                                                            <div class="form-group form-check">
+                                                                                <label class="form-check-label"
+                                                                                    for="user_agree">Agree With All
+                                                                                    Tarms And Condation.</label>
+                                                                                <input type="checkbox"
+                                                                                    class="form-check-input"
+                                                                                    id="user_agree">
+
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row">
+                                                                        <div class="col">
+                                                                            <button type="submit"
+                                                                                class="default-btn-3-alt w-100 mt-4">Pay
+                                                                                $86</button>
+                                                                        </div>
+                                                                    </div>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="tab-pane fade" id="pointCard" role="tabpanel">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="card-info">
+                                                            <h6 class="heading-6 mb-2">Add New Card</h6>
+                                                            <div class="supported-cards my-2">
+                                                                <ul>
+                                                                    <li>We Accept:</li>
+                                                                    <li><img src="assets/images/debit_card.png"
+                                                                            alt="visa" class="img-fluid"></li>
+                                                                    <li><img src="assets/images/master_card.png"
+                                                                            alt="visa" class="img-fluid"></li>
+                                                                    <li><img src="assets/images/discover_card.png"
+                                                                            alt="visa" class="img-fluid"></li>
+                                                                    <li><img src="assets/images/visa_card_02.png"
+                                                                            alt="visa" class="img-fluid"></li>
+                                                                    <li><img src="assets/images/express.png" alt="visa"
+                                                                            class="img-fluid"></li>
+                                                                </ul>
+                                                            </div>
+                                                            <div class="payment-card-form">
+                                                                <form action="#">
+                                                                    <div class="row mt-3">
+                                                                        <div class="col-md-12">
+                                                                            <input type="text" class="form-control"
+                                                                                placeholder="Card Number" ruquired />
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row mt-3">
+                                                                        <div class="col-md-6 mb-3 mb-lg-0">
+                                                                            <input type="text" class="form-control"
+                                                                                placeholder="Enter Valid (MM/YY)"
+                                                                                ruquired />
+                                                                        </div>
+                                                                        <div class="col-md-6">
+                                                                            <input type="text" class="form-control"
+                                                                                placeholder="CVV" />
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row mt-3">
+                                                                        <div class="col-md-12">
+                                                                            <input type="text" class="form-control"
+                                                                                placeholder="Enter The Card Holder Name"
+                                                                                ruquired />
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row mt-3">
+                                                                        <div class="col">
+                                                                            <div class="form-group form-check">
+                                                                                <label class="form-check-label"
+                                                                                    for="user_agree">Agree With All
+                                                                                    Tarms And Condation.</label>
+                                                                                <input type="checkbox"
+                                                                                    class="form-check-input"
+                                                                                    id="user_agree">
+
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row">
+                                                                        <div class="col">
+                                                                            <button type="submit"
+                                                                                class="default-btn-3-alt w-100 mt-4">Pay
+                                                                                $86</button>
+                                                                        </div>
+                                                                    </div>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="tab-pane fade" id="netbanking" role="tabpanel">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="card-info">
+                                                            <h6 class="heading-6 mb-2">Add New Card</h6>
+                                                            <div class="supported-cards my-2">
+                                                                <ul>
+                                                                    <li>We Accept:</li>
+                                                                    <li><img src="assets/images/debit_card.png"
+                                                                            alt="visa" class="img-fluid"></li>
+                                                                    <li><img src="assets/images/master_card.png"
+                                                                            alt="visa" class="img-fluid"></li>
+                                                                    <li><img src="assets/images/discover_card.png"
+                                                                            alt="visa" class="img-fluid"></li>
+                                                                    <li><img src="assets/images/visa_card_02.png"
+                                                                            alt="visa" class="img-fluid"></li>
+                                                                    <li><img src="assets/images/express.png" alt="visa"
+                                                                            class="img-fluid"></li>
+                                                                </ul>
+                                                            </div>
+                                                            <div class="payment-card-form">
+                                                                <form action="#">
+                                                                    <div class="row mt-3">
+                                                                        <div class="col-md-12">
+                                                                            <input type="text" class="form-control"
+                                                                                placeholder="Card Number" ruquired />
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row mt-3">
+                                                                        <div class="col-md-6 mb-3 mb-lg-0">
+                                                                            <input type="text" class="form-control"
+                                                                                placeholder="Enter Valid (MM/YY)"
+                                                                                ruquired />
+                                                                        </div>
+                                                                        <div class="col-md-6">
+                                                                            <input type="text" class="form-control"
+                                                                                placeholder="CVV" />
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row mt-3">
+                                                                        <div class="col-md-12">
+                                                                            <input type="text" class="form-control"
+                                                                                placeholder="Enter The Card Holder Name"
+                                                                                ruquired />
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row mt-3">
+                                                                        <div class="col">
+                                                                            <div class="form-group form-check">
+                                                                                <label class="form-check-label"
+                                                                                    for="user_agree">Agree With All
+                                                                                    Tarms And Condation.</label>
+                                                                                <input type="checkbox"
+                                                                                    class="form-check-input"
+                                                                                    id="user_agree">
+
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row">
+                                                                        <div class="col">
+                                                                            <button type="submit"
+                                                                                class="default-btn-3-alt w-100 mt-4">Pay
+                                                                                $86</button>
+                                                                        </div>
+                                                                    </div>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="tab-pane fade" id="cashOnDelivery" role="tabpanel">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="card-info">
+                                                            <h6 class="heading-6 mb-2">Add New Card</h6>
+                                                            <div class="supported-cards my-2">
+                                                                <ul>
+                                                                    <li>We Accept:</li>
+                                                                    <li><img src="assets/images/debit_card.png"
+                                                                            alt="visa" class="img-fluid"></li>
+                                                                    <li><img src="assets/images/master_card.png"
+                                                                            alt="visa" class="img-fluid"></li>
+                                                                    <li><img src="assets/images/discover_card.png"
+                                                                            alt="visa" class="img-fluid"></li>
+                                                                    <li><img src="assets/images/visa_card_02.png"
+                                                                            alt="visa" class="img-fluid"></li>
+                                                                    <li><img src="assets/images/express.png" alt="visa"
+                                                                            class="img-fluid"></li>
+                                                                </ul>
+                                                            </div>
+                                                            <div class="payment-card-form">
+                                                                <form action="#">
+                                                                    <div class="row mt-3">
+                                                                        <div class="col-md-12">
+                                                                            <input type="text" class="form-control"
+                                                                                placeholder="Card Number" ruquired />
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row mt-3">
+                                                                        <div class="col-md-6 mb-3 mb-lg-0">
+                                                                            <input type="text" class="form-control"
+                                                                                placeholder="Enter Valid (MM/YY)"
+                                                                                ruquired />
+                                                                        </div>
+                                                                        <div class="col-md-6">
+                                                                            <input type="text" class="form-control"
+                                                                                placeholder="CVV" />
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row mt-3">
+                                                                        <div class="col-md-12">
+                                                                            <input type="text" class="form-control"
+                                                                                placeholder="Enter The Card Holder Name"
+                                                                                ruquired />
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row mt-3">
+                                                                        <div class="col">
+                                                                            <div class="form-group form-check">
+                                                                                <input type="checkbox"
+                                                                                    class="form-check-input"
+                                                                                    id="user_agree">
+                                                                                <label class="form-check-label"
+                                                                                    for="user_agree">Agree With All
+                                                                                    Tarms And Condation.</label>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row">
+                                                                        <div class="col">
+                                                                            <button type="submit"
+                                                                                class="default-btn-3-alt w-100 mt-4">Pay
+                                                                                $86</button>
+                                                                        </div>
+                                                                    </div>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End Foods Tabs Area -->
+                    </div>
+                </div>
+                <div class="col-lg-4  mt-md-5 mt-lg-0 mt-xs-5">
+                    <div class="sidebar-wrapper-2">
+                        <div class="pricing-widget p-4 custom-border">
+                            <div class="widget-header d-flex align-items-center pb-3">
+                                <div class="widget-thumb me-3">
+                                    <img src="assets/images/widget_header_01.png" alt="widget" class="img-fluid" />
+                                </div>
+                                <div class="wid-title">
+                                    <h4 class="heading-4">Foodor Restaurant</h4>
+                                    <p> <i class="fas fa-map-marker-alt"></i> Delhi</p>
+                                </div>
+                            </div>
+                            <div class="widget-body pt-3">
+                                <div class="pricing-form">
+                                    <form action="#">
+                                        <div class="single-pricing d-flex justify-content-between">
+                                            <div class="title">
+                                                <p><i class="far fa-stop-circle"></i> Seafood Combo</p>
+                                            </div>
+                                            <div class="pricing-info">
+                                                <select name="shop_item_01" id="shop_item_01">
+                                                    <option value="1">1</option>
+                                                    <option value="2">2</option>
+                                                    <option value="3">3</option>
+                                                    <option value="4">4</option>
+                                                    <option value="5">5</option>
+                                                </select>
+                                                <p class="price">$19</p>
+                                                <a href="#" class="delete-btn"><i class="far fa-trash-alt"></i></a>
+                                            </div>
+                                        </div>
+                                        <div class="single-pricing d-flex justify-content-between">
+                                            <div class="title">
+                                                <p><i class="far fa-stop-circle"></i> Thai Combo</p>
+                                            </div>
+                                            <div class="pricing-info">
+                                                <select name="shop_item_01" id="shop_item_01">
+                                                    <option value="1">1</option>
+                                                    <option value="2">2</option>
+                                                    <option value="3">3</option>
+                                                    <option value="4">4</option>
+                                                    <option value="5">5</option>
+                                                </select>
+                                                <p class="price">$12</p>
+                                                <a href="#" class="delete-btn"><i class="far fa-trash-alt"></i></a>
+                                            </div>
+                                        </div>
+                                        <div class="single-pricing d-flex justify-content-between">
+                                            <div class="title">
+                                                <p><i class="far fa-stop-circle"></i> Mango Mojito</p>
+                                            </div>
+                                            <div class="pricing-info">
+                                                <select name="shop_item_01" id="shop_item_01">
+                                                    <option value="1">1</option>
+                                                    <option value="2">2</option>
+                                                    <option value="3">3</option>
+                                                    <option value="4">4</option>
+                                                    <option value="5">5</option>
+                                                </select>
+                                                <p class="price">$19</p>
+                                                <a href="#" class="delete-btn"><i class="far fa-trash-alt"></i></a>
+                                            </div>
+                                        </div>
+                                        <div class="single-pricing d-flex justify-content-between">
+                                            <div class="title">
+                                                <p><i class="far fa-stop-circle"></i> Chicken Wings</p>
+                                            </div>
+                                            <div class="pricing-info">
+                                                <select name="shop_item_01" id="shop_item_01">
+                                                    <option value="1">1</option>
+                                                    <option value="2">2</option>
+                                                    <option value="3">3</option>
+                                                    <option value="4">4</option>
+                                                    <option value="5">5</option>
+                                                </select>
+                                                <p class="price">$11</p>
+                                                <a href="#" class="delete-btn"><i class="far fa-trash-alt"></i></a>
+                                            </div>
+                                        </div>
+                                        <div class="single-pricing d-flex justify-content-between">
+                                            <div class="title">
+                                                <p><i class="far fa-stop-circle"></i> Cheese Chicken Pizza</p>
+                                            </div>
+                                            <div class="pricing-info">
+                                                <select name="shop_item_01" id="shop_item_01">
+                                                    <option value="1">1</option>
+                                                    <option value="2">2</option>
+                                                    <option value="3">3</option>
+                                                    <option value="4">4</option>
+                                                    <option value="5">5</option>
+                                                </select>
+                                                <p class="price">$28</p>
+                                                <a href="#" class="delete-btn"><i class="far fa-trash-alt"></i></a>
+                                            </div>
+                                        </div>
+                                        <textarea name="user_suggestion" id="user_suggestion" cols="30" rows="5"
+                                            class="form-control custom-round"
+                                            placeholder="Any Suggestions? For Us..."></textarea>
+                                        <div class="input-group mt-3">
+                                            <input type="text" class="form-control custom-round" />
+                                            <button class="btn-default">Apply Now</button>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="pay-form mt-4">
+                                    <form action="#">
+                                        <div class="pay-list">
+                                            <ul>
+                                                <li><span>Item Total</span> <span>$81</span></li>
+                                                <li><span>Restaurant Charges</span> <span>$15</span></li>
+                                                <li><span>Delivery Fee</span> <span>$81</span></li>
+                                                <li class="text-hover"><span>Total Discount</span> <span> -$20</span>
+                                                </li>
+                                                <li><span>To Pay</span> <span>$86</span></li>
+                                            </ul>
+                                        </div>
+                                        <button type="submit" class="btn-default w-100">Pay $86</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Start Promo Widget -->
+                        <div class="promo-widget p-4 text-center mt-4 bg-hover-2 custom-border-2 custom-round">
+                            <p class="saved text-hover mb-0">You have Save <strong>$20</strong> On Your Bill.</p>
+                        </div>
+                        <!-- End Promo Widget -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End page -->
+
+    <!-- Start Subscribe Area -->
+    <div class="subscribe-area section-ptb-2" style="background-image: url(assets/images/action_bg.jpg);">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-7 mb-xs-5">
+                    <div class="subscribe-title text-white">
+                        <i class="fas fa-envelope-open-text"></i>
+                        <h2 class="heading-2-extra  text-white d-inline-block mb-0 ml-2">Subscribe To Our Newsletter
+                        </h2>
+                    </div>
+                </div>
+                <div class="col-lg-5">
+                    <div class="subscribe-form">
+                        <form action="#">
+                            <div class="form-group d-flex mb-0">
+                                <input type="email" class="form-control" placeholder="Your Email" required />
+                                <button type="submit">Subscribe Now</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Subscribe Area -->
+
+    <!-- Start Footer -->
+    <footer class="footer-wrapper">
+        <div class="footer-area py-5">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-3 col-sm-6 mb-sm-5 mb-lg-0 mb-xs-5">
+                        <div class="footer-widget">
+                            <div class="footer-logo">
+                                <a href="index.html" class="d-inline-block mb-3"><img src="assets/images/white_logo.png"
+                                        alt="logo" class="img-fluid" /></a>
+                            </div>
+                            <p class="text-white">Curabitur posuere felis in massa pulvinar, nec mollis nibh eleifend.
+                                Maecenas turpis mi. Vivamus pulvinar lobortis vehicula pellentesque.</p>
+                            <div class="social-profiles">
+                                <ul>
+                                    <li>
+                                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                                    </li>
+                                    <li>
+                                        <a href="#"><i class="fab fa-twitter"></i></a>
+                                    </li>
+                                    <li>
+                                        <a href="#"><i class="fab fa-instagram"></i></a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-1 col-sm-3 mb-sm-5 mb-lg-0 mb-xs-5">
+                        <div class="footer-widget">
+                            <h3 class="widget-title"> Links</h3>
+                            <div class="general-nav">
+                                <ul>
+                                    <li><a href="#">Home</a></li>
+                                    <li><a href="#">About Us</a></li>
+                                    <li><a href="#">Services</a></li>
+                                    <li><a href="#">Menu</a></li>
+                                    <li><a href="#">Blog</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-sm-3 mb-sm-5 mb-lg-0 mb-xs-5">
+                        <div class="footer-widget link-widget">
+                            <h3 class="widget-title">Other Links</h3>
+                            <div class="general-nav">
+                                <ul>
+                                    <li><a href="#">Home</a></li>
+                                    <li><a href="#">About Us</a></li>
+                                    <li><a href="#">Services</a></li>
+                                    <li><a href="#">Menu</a></li>
+                                    <li><a href="#">Blog</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 mb-xs-5">
+                        <div class="footer-widget">
+
+                            <h3 class="widget-title">Instagram Gallery</h3>
+                            <div class="photos-gallery">
+                                <div class="single-gallery">
+                                    <a href="#"><img src="assets/images/gallery/01.jpg" alt="gallery 01"
+                                            class="img-fluid" /></a>
+                                </div>
+                                <div class="single-gallery">
+                                    <a href="#"><img src="assets/images/gallery/02.jpg" alt="gallery 01"
+                                            class="img-fluid" /></a>
+                                </div>
+                                <div class="single-gallery">
+                                    <a href="#"><img src="assets/images/gallery/03.jpg" alt="gallery 01"
+                                            class="img-fluid" /></a>
+                                </div>
+                                <div class="single-gallery">
+                                    <a href="#"><img src="assets/images/gallery/04.jpg" alt="gallery 01"
+                                            class="img-fluid" /></a>
+                                </div>
+                                <div class="single-gallery">
+                                    <a href="#"><img src="assets/images/gallery/05.jpg" alt="gallery 01"
+                                            class="img-fluid" /></a>
+                                </div>
+                                <div class="single-gallery">
+                                    <a href="#"><img src="assets/images/gallery/06.jpg" alt="gallery 01"
+                                            class="img-fluid" /></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="footer-widget">
+                            <h3 class="widget-title">Contact Us</h3>
+                            <div class="general-nav-2">
+                                <ul>
+                                    <li>
+                                        <i class="fas fa-map-marker-alt"></i>
+                                        203, Envato ka Yents, Behind Alis Str, Melbourne, Australia.
+                                    </li>
+                                    <li><i class="fas fa-phone-volume"></i> <span><a href="#">+000 123 456 789</a> <br>
+                                            <a href="#">+000 12 48 57 665</a></span>
+                                    </li>
+                                    <li><i class="fas fa-envelope"></i> <span><a href="/cdn-cgi/l/email-protection#0c666d7c6f6d6a694c6b616d6560226f6361"><span class="__cf_email__" data-cfemail="097a6c7b7f606a6c7a496f66666d667b276a6664">[email&#160;protected]</span>
+                                            </a> <br>
+                                            <a href="/cdn-cgi/l/email-protection#ed8e8c8b88dfdfded8ad948c858282c38e8280"><span class="__cf_email__" data-cfemail="7910171f16391f16161d160b571a1614">[email&#160;protected]</span></a></span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom bg-black-2 py-3">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="copyright-text text-center">
+                            <p>Copyright © 2021 <a href="#"><strong>Foodor.</strong></a> All rights reserved.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- End Footer -->
+
+    <!--  Javascript Files -->
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="assets/js/jquery-3.5.1.min.js" type="611da8d670adb936632d3e03-text/javascript"></script>
+    <script src="assets/js/bootstrap.bundle.min.js" type="611da8d670adb936632d3e03-text/javascript"></script>
+    <script src="assets/js/aos.js" type="611da8d670adb936632d3e03-text/javascript"></script>
+    <script src="assets/js/owl.carousel.min.js" type="611da8d670adb936632d3e03-text/javascript"></script>
+    <script src="assets/js/jquery.fancybox.min.js" type="611da8d670adb936632d3e03-text/javascript"></script>
+    <script src="assets/js/jquery.waypoints.min.js" type="611da8d670adb936632d3e03-text/javascript"></script>
+    <script src="assets/js/jquery.counterup.min.js" type="611da8d670adb936632d3e03-text/javascript"></script>
+    <script src="assets/js/jquery.scrollUp.min.js" type="611da8d670adb936632d3e03-text/javascript"></script>
+    <script src="assets/js/jquery.nice-select.min.js" type="611da8d670adb936632d3e03-text/javascript"></script>
+    <script src="assets/js/main.js" type="611da8d670adb936632d3e03-text/javascript"></script>
+<script src="/cdn-cgi/scripts/7d0fa10a/cloudflare-static/rocket-loader.min.js" data-cf-settings="611da8d670adb936632d3e03-|49" defer></script></body>
+
+</html>
