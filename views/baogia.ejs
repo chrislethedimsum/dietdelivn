@@ -1,420 +1,407 @@
 <%- include('includes/header.ejs') %>
 
-    <!-- Start Popular Items -->
-    <div class="popular-items-area section-ptb bg-semi-white">
-         
+ 
+   <!-- Start Popular Items -->
+   <div id="cacgoi" class="popular-items-area section-ptb bg-semi-white"> 
+    <div class="container">
+        <p style="font-style: italic; font-size:14px;">*Giá được áp dụng cho các đơn hàng đăng ký hoặc hẹn giao hàng từ 1/1/2025 đến 31/12/2025</p>
+        <div class="row mb-4">
+            <div class="col-md-8 mx-auto">
+                <div class="section-title text-center mb-3">
+                    <h2 class="heading-2">CÁC GÓI ĂN</h2>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="bg-white rounded" id="thongTinKhach"></div>
+                <div class="popular-posts-wrapper owl-carousel carousel-style-one">
+                    <div class="popular-item">
+                        <div class="card border-0 product-card custom-round">
+                            <div class="card-thumb">
+                                <a href="#ngay" onclick="expandAndScroll(event)" class="black-overlay" data-bs-toggle="collapse" role="button" aria-controls="ngay"><img
+                                        src="images/food_04.jpg" class="card-img-top" alt="food"></a>
+                                <a href="#ngay" onclick="expandAndScroll(event)" class="sm-btn" data-bs-toggle="collapse" role="button" aria-controls="ngay"><i class="fa-solid fa-circle-info"></i> Xem Thêm</a>
+                                <a href="#ngaybaogia" onclick="expandAndScroll(event)" class="sm-btn" role="button" aria-controls="ngay"><i class="fas fa-plus"></i> Báo Giá</a>
+                            </div>
+                            <div class="card-body">
+                                <h6 class="heading-6"><a href="#ngay" onclick="expandAndScroll(event)" data-bs-toggle="collapse" role="button" aria-controls="ngay">Gói Ngày</a></h6>
+                                <span>Phù hợp với khách hàng muốn trải nghiệm thử chất lượng sản phẩm của Diet Deli 
+                                    trước khi sử dụng một gói ăn lớn hơn. Đơn hàng được giao sau 2 ngày đặt hàng.</span>
+                                <div class="card-meta d-flex py-2">
+                                    <div class="product-rating">
+                                        <span class="far fa-star"></span>
+                                        <span class="rating-point">Số gói đã bán</span>
+                                    </div>
+                                    <div class="product-price pl-4">
+                                        <span>10</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="popular-item">
+                        <div class="card border-0 product-card custom-round custom-round">
+                            <div class="card-thumb">
+                                <a href="#tuan" onclick="expandAndScroll(event)" class="black-overlay" data-bs-toggle="collapse" role="button" aria-controls="tuan"><img
+                                        src="images/food_01.jpg" class="card-img-top" alt="food" /></a>
+                                <a href="#tuan" onclick="expandAndScroll(event)" class="sm-btn" data-bs-toggle="collapse" role="button" aria-controls="tuan"><i class="fa-solid fa-circle-info"></i> Xem Thêm</a>
+                                <a href="#tuanbaogia" onclick="expandAndScroll(event)" class="sm-btn" role="button" aria-controls="tuan"><i class="fas fa-plus"></i> Báo Giá</a>
+                            </div>
+                            <div class="card-body">
+                                <h6 class="heading-6"><a href="#tuan" onclick="expandAndScroll(event)" data-bs-toggle="collapse" role="button" aria-controls="tuan">Gói Tuần</a></h6>
+                                    <span>Phù hợp với khách hàng đang công tác tại Hà Nội trong một thời gian 
+                                        ngắn, khách hàng có một khoảng thời gian bận rộn ngắn và không thể chuẩn bị đồ ăn.</span>
+                                <div class="card-meta d-flex py-2">
+                                    <div class="product-rating">
+                                        <span class="far fa-star"></span>
+                                        <span class="rating-point">Số gói đã bán</span>
+                                    </div>
+                                    <div class="product-price">
+                                        <span>30</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="popular-item">
+                        <div class="card border-0 product-card custom-round custom-round">
+                            <div class="card-thumb">
+                                <a href="#thang" onclick="expandAndScroll(event)" class="black-overlay" data-bs-toggle="collapse" role="button" aria-controls="thang"><img
+                                        src="images/food_01.jpg" class="card-img-top" alt="food" /></a>
+                                <a href="#thang" onclick="expandAndScroll(event)" class="sm-btn" data-bs-toggle="collapse" role="button" aria-controls="thang"><i class="fa-solid fa-circle-info"></i> Xem thêm</a>
+                                <a href="#thangbaogia" onclick="expandAndScroll(event)" class="sm-btn" role="button" aria-controls="thang"><i class="fas fa-plus"></i> Báo Giá</a>
+                            </div>
+                            <div class="card-body">
+                                <h6 class="heading-6"><a href="#thang" onclick="expandAndScroll(event)" data-bs-toggle="collapse" role="button" aria-controls="thang">Gói Tháng</a></h6>
+                                <span>Phù hợp với khách hàng có mục tiêu, muốn đầu tư cho sức khoẻ nói chung và hướng đến một mục tiêu thể chất cụ thể dài hạn nói riêng.</span>
+                                <div class="card-meta d-flex py-2">
+                                    <div class="product-rating">
+                                        <span class="far fa-star"></span>
+                                        <span class="rating-point">Số Gói Đã Bán</span>
+                                    </div>
+                                    <div class="product-price">
+                                        <span>50</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="popular-item">
+                        <div class="card border-0 product-card custom-round custom-round">
+                            <div class="card-thumb">
+                                <a href="#dacbiet" onclick="expandAndScroll(event)" class="black-overlay" data-bs-toggle="collapse" role="button" aria-controls="dacbiet"><img
+                                        src="images/food_01.jpg" class="card-img-top" alt="food" /></a>
+                                <a href="#dacbiet" onclick="expandAndScroll(event)" class="sm-btn" data-bs-toggle="collapse" role="button" aria-controls="dacbiet"><i class="fa-solid fa-circle-info"></i> Xem thêm</a>
+                                <a href="#dacbiet" onclick="expandAndScroll(event)" class="sm-btn" data-bs-toggle="collapse" role="button" aria-controls="dacbiet"><i class="fas fa-plus"></i> Báo Giá</a>
+                            </div>
+                            <div class="card-body">
+                                <h6 class="heading-6"><a href="#dacbiet" onclick="expandAndScroll(event)" data-bs-toggle="collapse" role="button" aria-controls="dacbiet">Gói Đơn Hàng Đặc Biệt</a></h6>
+                                <span>Phù hợp với khách hàng có nhu cầu đặc biệt về sức khoẻ, ăn kiêng theo bệnh lý hoặc ăn kiêng để thi đấu.</span>
+                                <div class="card-meta d-flex py-2">
+                                    <div class="product-rating">
+                                        <span class="far fa-star"></span>
+                                        <span class="rating-point">Số Gói Đã Bán</span>
+                                    </div>
+                                    <div class="product-price">
+                                        <span>50</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div> 
+                    <!-- Popular Item End -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+<!-- End Popular Items -->
+
+<!-- Start Product Details -->
+
+<div id="ngay" class="collapse bg-white">
+    <div class="product-details section-ptb">
         <div class="container">
-            <p style="font-style: italic; font-size:14px;">*Giá được áp dụng cho các đơn hàng đăng ký hoặc hẹn giao hàng từ 1/1/2025 đến 31/12/2025</p>
-            <div class="row mb-4">
-                <div class="col-md-8 mx-auto">
-                    <div class="section-title text-center mb-3">
-                        <h2 class="heading-2">CÁC GÓI ĂN</h2>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="popular-posts-wrapper owl-carousel carousel-style-one">
-                        <div class="popular-item">
-                            <div class="card border-0 product-card custom-round">
-                                <div class="card-thumb">
-                                    <a href="#ngay" onclick="expandAndScroll(event)" class="black-overlay" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="ngay"><img
-                                            src="/images/food_04.jpg" class="card-img-top" alt="food"></a>
-                                    <a href="#ngay" onclick="expandAndScroll(event)" class="sm-btn" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="ngay"><i class="fa-solid fa-circle-info"></i> Xem Thêm</a>
-                                    <a href="#ngay" onclick="expandAndScroll(event)" class="sm-btn" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="ngay"><i class="fas fa-plus"></i> Báo Giá</a>
-                                </div>
-                                <div class="card-body">
-                                    <h6 class="heading-6"><a href="#ngay" onclick="expandAndScroll(event)" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="ngay">Gói Ngày</a></h6>
-                                    <span>Phù hợp với khách hàng muốn trải nghiệm thử chất lượng sản phẩm của Diet Deli 
-                                        trước khi sử dụng một gói ăn lớn hơn. Đơn hàng được giao sau 2 ngày đặt hàng.</span>
-                                    <div class="card-meta d-flex py-2">
-                                        <div class="product-rating">
-                                            <span class="far fa-star"></span>
-                                            <span class="rating-point">Số gói đã bán</span>
-                                        </div>
-                                        <div class="product-price pl-4">
-                                            <span>10</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+            <h4 class="heading-4">Gói ngày:</h4><br>
+            Bữa trưa - Bữa tối, mặc định 400kcal<br>
+            <br>
+            *Lưu ý: Giá trên là giá cho thực đơn tiêu chuẩn từ thứ 2 đến thứ 7. Nếu bạn đặt hàng vào thứ 2, đơn hàng của bạn sẽ được giao từ thứ tư cùng tuần. Chúng tôi sẽ tính đổ số buổi và bữa ăn mà bạn nhận được.<br>
+            <br>
+            <ul>
+                <li>Sử dụng thực đơn 2 bữa Trưa-Tối vào ngày được chọn tại trang dietdeli.vn/menu</li>
+                <li>Menu được thay đổi mỗi tuần, sau vòng sau 2 tháng.</li>
+                <li>Giao 02 phần ăn tận nơi mỗi ngày, từ thứ 2 đến thứ 7.</li>
+                <li>Calories mỗi ngày được thiết kế riêng để phục vụ cho tình trạng và nhu cầu riêng của bạn.</li>
+            </ul>
+            <br>
+            <p style="font-style: italic">
+            **Thích hợp cho người muốn trải nghiệm thử dịch vụ và đồ ăn của Diet Deli<br></p>
+        </div>
+    </div>
+</div>
+<div id="ngaybaogia" class="collapse bg-white">
+    <div class="row product-details section-ptb">
+        <div class="container col-sm-9">
+            <h4 class="heading-4">Báo giá ngày</h4><br>
+            <p style="font-style: italic">(Chưa kèm phí vận chuyển, xem phí vận chuyển <a href="chinhsachgiaohang.html">tại đây</a>)</p><br>
+            <div class="accordion" id="ngayBaoGia">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingOneNgay">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOneNgay" aria-expanded="false" aria-controls="collapseOneNgay">
+                        1 bữa/ngày
+                        </button>
+                    </h2>
+                    <div id="collapseOneNgay" class="accordion-collapse collapse" aria-labelledby="headingOneNgay" data-bs-parent="#ngayBaoGia">
+                        <div class="accordion-body">
+                            <p id="ngay-1-bua" class="mt-3"></p>
                         </div>
-                        <div class="popular-item">
-                            <div class="card border-0 product-card custom-round custom-round">
-                                <div class="card-thumb">
-                                    <a href="#tuan" onclick="expandAndScroll(event)" class="black-overlay" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="tuan"><img
-                                            src="/images/food_01.jpg" class="card-img-top" alt="food" /></a>
-                                    <a href="#tuan" onclick="expandAndScroll(event)" class="sm-btn" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="tuan"><i class="fa-solid fa-circle-info"></i> Xem Thêm</a>
-                                    <a href="#tuan" onclick="expandAndScroll(event)" class="sm-btn" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="tuan"><i class="fas fa-plus"></i> Báo Giá</a>
-                                </div>
-                                <div class="card-body">
-                                    <h6 class="heading-6"><a href="#tuan" onclick="expandAndScroll(event)" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="tuan">Gói Tuần</a></h6>
-                                        <span>Phù hợp với khách hàng đang công tác tại Hà Nội trong một thời gian 
-                                            ngắn, khách hàng có một khoảng thời gian bận rộn ngắn và không thể chuẩn bị đồ ăn.</span>
-                                    <div class="card-meta d-flex py-2">
-                                        <div class="product-rating">
-                                            <span class="far fa-star"></span>
-                                            <span class="rating-point">Số gói đã bán</span>
-                                        </div>
-                                        <div class="product-price">
-                                            <span>30</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                    </div>
+                    </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingTwoNgay">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwoNgay" aria-expanded="false" aria-controls="collapseTwoNgay">
+                            2 bữa/ngày
+                        </button>
+                    </h2>
+                    <div id="collapseTwoNgay" class="accordion-collapse collapse" aria-labelledby="headingTwoNgay" data-bs-parent="#ngayBaoGia">
+                        <div class="accordion-body">
+                            <p id="ngay-2-bua" class="mt-3"></p>
                         </div>
-                        <div class="popular-item">
-                            <div class="card border-0 product-card custom-round custom-round">
-                                <div class="card-thumb">
-                                    <a href="#thang" onclick="expandAndScroll(event)" class="black-overlay" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="thang"><img
-                                            src="/images/food_01.jpg" class="card-img-top" alt="food" /></a>
-                                    <a href="#thang" onclick="expandAndScroll(event)" class="sm-btn" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="thang"><i class="fa-solid fa-circle-info"></i> Xem thêm</a>
-                                    <a href="#thang" onclick="expandAndScroll(event)" class="sm-btn" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="thang"><i class="fas fa-plus"></i> Báo Giá</a>
-                                </div>
-                                <div class="card-body">
-                                    <h6 class="heading-6"><a href="#thang" onclick="expandAndScroll(event)" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="thang">Gói Tháng</a></h6>
-                                    <span>Phù hợp với khách hàng có mục tiêu, muốn đầu tư cho sức khoẻ nói chung và hướng đến một mục tiêu thể chất cụ thể dài hạn nói riêng.</span>
-                                    <div class="card-meta d-flex py-2">
-                                        <div class="product-rating">
-                                            <span class="far fa-star"></span>
-                                            <span class="rating-point">Số Gói Đã Bán</span>
-                                        </div>
-                                        <div class="product-price">
-                                            <span>50</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container col-sm-3">
+            <img class="img-thumbnail" src="images/qr.jpg">
+            <ul>
+                <li>Quý khách hàng vui lòng chuyển đúng số tiền của gói ăn vào tài khoản của Diet Deli theo mã QR phía trên.</li>
+                <li>Phần ghi chú, quý khách vui lòng ghi theo cú pháp "số_điện_thoại + tên_khách_hàng". Chúng tôi sẽ liên hệ lại theo số điện thoại trong vòng 10 phút sau khi nhận được thông tin.</li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div id="tuan" class="collapse bg-white">
+    <div class="product-details section-ptb">
+        <div class="container">
+            <h4 class="heading-4">Gói tuần</h4><br>
+            Bữa trưa - Bữa tối<br>
+            <br>
+            *Lưu ý: Giá trên là giá cho thực đơn tiêu chuẩn từ thứ 2 đến thứ 7. Nếu bạn đặt hàng vào thứ 2, đơn hàng của bạn sẽ được giao từ thứ tư cùng tuần. Chúng tôi sẽ tính đổ số buổi và bữa ăn mà bạn nhận được.<br>
+            <br>
+            <ul>
+                <li>Sử dụng thực đơn 2 bữa Trưa-Tối vào ngày được chọn tại trang dietdeli.vn/menu</li>
+                <li>Menu được thay đổi mỗi tuần, sau vòng sau 2 tháng.</li>
+                <li>Giao 02 phần ăn tận nơi mỗi ngày, từ thứ 2 đến thứ 7.</li>
+                <li>Calories mỗi ngày được thiết kế riêng để phục vụ cho tình trạng và nhu cầu riêng của bạn.</li>
+            </ul>
+            <br>
+            <p style="font-style: italic">
+            **Thích hợp cho dân văn phòng bận rộn, vừa giảm cân, vừa tiết kiệm thời gian.<br></p> 
+        </div>
+    </div>
+</div>
+<div id="tuanbaogia" class="collapse bg-white">
+    <div class="row product-details section-ptb">
+        <div class="container col-sm-9">
+            <h4 class="heading-4">Báo giá tuần</h4><br>
+            <p style="font-style: italic">(Chưa kèm phí vận chuyển, xem phí vận chuyển <a href="chinhsachgiaohang.html">tại đây</a>)</p><br>
+            <div class="accordion" id="tuanBaoGia">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingOneTuan">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOneTuan" aria-expanded="false" aria-controls="collapseOneTuan">
+                        1 bữa/ngày
+                        </button>
+                    </h2>
+                    <div id="collapseOneTuan" class="accordion-collapse collapse" aria-labelledby="headingOneTuan" data-bs-parent="#tuanBaoGia">
+                        <div class="accordion-body">
+                            <p id="tuan-1-bua" class="mt-3"></p>
                         </div>
-                        <div class="popular-item">
-                            <div class="card border-0 product-card custom-round custom-round">
-                                <div class="card-thumb">
-                                    <a href="#dacbiet" onclick="expandAndScroll(event)" class="black-overlay" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="dacbiet"><img
-                                            src="/images/food_01.jpg" class="card-img-top" alt="food" /></a>
-                                    <a href="#dacbiet" onclick="expandAndScroll(event)" class="sm-btn" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="dacbiet"><i class="fa-solid fa-circle-info"></i> Xem thêm</a>
-                                    <a href="#dacbiet" onclick="expandAndScroll(event)" class="sm-btn" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="dacbiet"><i class="fas fa-plus"></i> Báo Giá</a>
-                                </div>
-                                <div class="card-body">
-                                    <h6 class="heading-6"><a href="#dacbiet" onclick="expandAndScroll(event)" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="dacbiet">Gói Đơn Hàng Đặc Biệt</a></h6>
-                                    <span>Phù hợp với khách hàng có nhu cầu đặc biệt về sức khoẻ, ăn kiêng theo bệnh lý hoặc ăn kiêng để thi đấu.</span>
-                                    <div class="card-meta d-flex py-2">
-                                        <div class="product-rating">
-                                            <span class="far fa-star"></span>
-                                            <span class="rating-point">Số Gói Đã Bán</span>
-                                        </div>
-                                        <div class="product-price">
-                                            <span>50</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div> 
-                        <!-- Popular Item End -->
+                    </div>
+                    </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingTwoTuan">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwoTuan" aria-expanded="false" aria-controls="collapseTwoTuan">
+                            2 bữa/ngày
+                        </button>
+                    </h2>
+                    <div id="collapseTwoTuan" class="accordion-collapse collapse" aria-labelledby="headingTwoTuan" data-bs-parent="#tuanBaoGia">
+                        <div class="accordion-body">
+                            <p id="tuan-2-bua" class="mt-3"></p>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+        <div class="container col-sm-3">
+            <img class="img-thumbnail" src="images/qr.jpg">
+            <ul>
+                <li>Quý khách hàng vui lòng chuyển đúng số tiền của gói ăn vào tài khoản của Diet Deli theo mã QR phía trên.</li>
+                <li>Phần ghi chú, quý khách vui lòng ghi theo cú pháp "số_điện_thoại + tên_khách_hàng". Chúng tôi sẽ liên hệ lại theo số điện thoại trong vòng 10 phút sau khi nhận được thông tin.</li>
+            </ul>
+        </div>
     </div>
-    <!-- End Popular Items -->
+</div>
+<div id="thang" class="collapse bg-white">
+    <div class="product-details section-ptb">
+        <div class="container">
+            <h4 class="heading-4">Gói tháng</h4><br>
+            Bữa trưa - Bữa tối<br>
+            <br>
+            *Lưu ý: Giá trên là giá cho thực đơn tiêu chuẩn từ thứ 2 đến thứ 7. Nếu bạn đặt hàng vào thứ 2, đơn hàng của bạn sẽ được giao từ thứ tư cùng tuần. Chúng tôi sẽ tính đổ số buổi và bữa ăn mà bạn nhận được.<br>
+            <br>
+            <ul>
+                <li>Sử dụng thực đơn 2 bữa Trưa-Tối vào ngày được chọn tại trang dietdeli.vn/menu</li>
+                <li>Menu được thay đổi mỗi tuần, sau vòng sau 2 tháng.</li>
+                <li>Giao 02 phần ăn tận nơi mỗi ngày, từ thứ 2 đến thứ 7.</li>
+                <li>Calories mỗi ngày được thiết kế riêng để phục vụ cho tình trạng và nhu cầu riêng của bạn.</li>
+            </ul>
+            <br>
+            <p style="font-style: italic">
+            **Thích hợp cho người ăn kiêng có mục tiêu, muốn thay đổi sức khoẻ hoặc ngoại hình.<br></p>
+        </div>
+    </div>
+</div>
+<div id="thangbaogia" class="collapse bg-white">
+    <div class="row product-details section-ptb">
+        <div class="container col-sm-9">
+            <h4 class="heading-4">Báo giá Gói tháng</h4><br>
+            <p style="font-style: italic">(Chưa kèm phí vận chuyển, xem phí vận chuyển <a href="chinhsachgiaohang.html">tại đây</a>)</p><br>
+            <div class="accordion" id="thangBaoGia">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingOneThang">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOneThang" aria-expanded="false" aria-controls="collapseOneThang">
+                            1 bữa/ngày
+                        </button>
+                    </h2>
+                    <div id="collapseOneThang" class="accordion-collapse collapse" aria-labelledby="headingOneThang" data-bs-parent="#thangBaoGia">
+                        <div class="accordion-body">
+                            <p id="thang-1-bua" class="mt-3"></p>
+                        </div>
+                    </div>
+                    </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingTwoThang">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwoThang" aria-expanded="false" aria-controls="collapseTwoThang">
+                            2 bữa/ngày
+                        </button>
+                    </h2>
+                    <div id="collapseTwoThang" class="accordion-collapse collapse" aria-labelledby="headingTwoThang" data-bs-parent="#thangBaoGia">
+                        <div class="accordion-body">
+                            <p id="thang-2-bua" class="mt-3"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container col-sm-3">
+            <img class="img-thumbnail" src="images/qr.jpg">
+            <ul>
+                <li>Quý khách hàng vui lòng chuyển đúng số tiền của gói ăn vào tài khoản của Diet Deli theo mã QR phía trên.</li>
+                <li>Phần ghi chú, quý khách vui lòng ghi theo cú pháp "số_điện_thoại + tên_khách_hàng". Chúng tôi sẽ liên hệ lại theo số điện thoại trong vòng 10 phút sau khi nhận được thông tin.</li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div id="dacbiet" class="collapse bg-white">
+    <div class="product-details section-ptb">
+        <div class="container">
+            <h4 class="heading-4">Gói đặc biệt</h4><br>
+            <p>
+                Phần ăn được thiết kế riêng theo nhu cầu của khách hàng. Về mặt calo, loại thực phẩm và 
+                lượng thực phẩm cho 3 loại Macro Nutrients (Tinh bột, Chất đạm, Chất béo).<br>
+                Chúng tôi có thể phục vụ các phần ăn giàu đạm của vận động viên, phần ăn kiêng tinh bột, kiêng béo 
+                của một số bệnh lý.<br>
+                Vui lòng liên hệ với chúng tôi qua Email info@dietdeli.vn hoặc số Zalo: 0389150399 với dòng 
+                nội dung "Phần ăn đặc biệt" để nhận được tư vấn và báo giá cho dịch vụ này.<br>
+            </p>
+        </div>
+    </div>
+</div>
+<!-- End Product Details -->
+<form id="khachhangForm" name="khachhangForm" class="m-5 p-5 border rounded bg-white">
+    <h3 class="heading-2">Các câu hỏi cho khách hàng để báo giá</h3>
 
-    <!-- Start Product Details -->
+    <!-- Tuổi -->
+    <div class="row mb-3">
+        <label class="col-sm-3 col-form-label"><strong>Tuổi</strong></label>
+        <div class="col-sm-9">
+            <input type="number" max="80" min="15" value="15" class="form-control" name="tuoi">
+        </div>
+    </div>
 
-    <div id="ngay" class="collapse">
-        <div class="product-details section-ptb">
-            <div class="container">
-                <h4 class="heading-4">Gói ngày:</h4><br>
-                Bữa trưa - Bữa tối, mặc định 400kcal<br>
-                <br>
-                *Lưu ý: Giá trên là giá cho thực đơn tiêu chuẩn từ thứ 2 đến thứ 7. Nếu bạn đặt hàng vào thứ 2, đơn hàng của bạn sẽ được giao từ thứ tư cùng tuần. Chúng tôi sẽ tính đổ số buổi và bữa ăn mà bạn nhận được.<br>
-                <br>
-                <ul>
-                    <li>Sử dụng thực đơn 2 bữa Trưa-Tối vào ngày được chọn tại trang dietdeli.vn/menu</li>
-                    <li>Menu được thay đổi mỗi tuần, sau vòng sau 2 tháng.</li>
-                    <li>Giao 02 phần ăn tận nơi mỗi ngày, từ thứ 2 đến thứ 7.</li>
-                    <li>Calories mỗi ngày được thiết kế riêng để phục vụ cho tình trạng và nhu cầu riêng của bạn.</li>
-                </ul>
-                <br>
-                <p style="font-style: italic">
-                **Thích hợp cho người muốn trải nghiệm thử dịch vụ và đồ ăn của Diet Deli<br></p>
-                Chọn để nhận báo giá<br>
-                <p style="font-style: italic">(Chưa kèm phí vận chuyển, xem phí vận chuyển <a href="chinhsachgiaohang">tại đây</a>)</p><br>
-                1 bữa/ngày<br>
-                2 bữa/ngày<br>
-            </div>
+    <!-- Giới tính -->
+    <div class="row mb-3">
+        <label class="col-sm-3 col-form-label"><strong>Giới tính (Sex)</strong></label>
+        <div class="col-sm-9">
+            <select class="form-select no-nice-select" name="gioitinh">
+                <option value="" selected disabled>Chọn giới tính</option>
+                <option value="nam">Nam</option>
+                <option value="nu">Nữ</option>
+            </select>
         </div>
     </div>
-    <div id="tuan" class="collapse">
-        <div class="product-details section-ptb">
-            <div class="container">
-                <h4 class="heading-4">Gói tuần</h4><br>
-                Bữa trưa - Bữa tối<br>
-                <br>
-                *Lưu ý: Giá trên là giá cho thực đơn tiêu chuẩn từ thứ 2 đến thứ 7. Nếu bạn đặt hàng vào thứ 2, đơn hàng của bạn sẽ được giao từ thứ tư cùng tuần. Chúng tôi sẽ tính đổ số buổi và bữa ăn mà bạn nhận được.<br>
-                <br>
-                <ul>
-                    <li>Sử dụng thực đơn 2 bữa Trưa-Tối vào ngày được chọn tại trang dietdeli.vn/menu</li>
-                    <li>Menu được thay đổi mỗi tuần, sau vòng sau 2 tháng.</li>
-                    <li>Giao 02 phần ăn tận nơi mỗi ngày, từ thứ 2 đến thứ 7.</li>
-                    <li>Calories mỗi ngày được thiết kế riêng để phục vụ cho tình trạng và nhu cầu riêng của bạn.</li>
-                </ul>
-                <br>
-                <p style="font-style: italic">
-                **Thích hợp cho dân văn phòng bận rộn, vừa giảm cân, vừa tiết kiệm thời gian.<br></p>
-                Chọn để nhận báo giá<br>
-                <p style="font-style: italic">(Chưa kèm phí vận chuyển, xem phí vận chuyển <a href="chinhsachgiaohang">tại đây</a>)</p><br>
-                1 bữa/ngày<br>
-                2 bữa/ngày<br>
-            </div>
-        </div>
-    </div>
-    <div id="thang" class="collapse">
-        <div class="product-details section-ptb">
-            <div class="container">
-                <h4 class="heading-4">Gói tháng</h4><br>
-                Bữa trưa - Bữa tối<br>
-                <br>
-                *Lưu ý: Giá trên là giá cho thực đơn tiêu chuẩn từ thứ 2 đến thứ 7. Nếu bạn đặt hàng vào thứ 2, đơn hàng của bạn sẽ được giao từ thứ tư cùng tuần. Chúng tôi sẽ tính đổ số buổi và bữa ăn mà bạn nhận được.<br>
-                <br>
-                <ul>
-                    <li>Sử dụng thực đơn 2 bữa Trưa-Tối vào ngày được chọn tại trang dietdeli.vn/menu</li>
-                    <li>Menu được thay đổi mỗi tuần, sau vòng sau 2 tháng.</li>
-                    <li>Giao 02 phần ăn tận nơi mỗi ngày, từ thứ 2 đến thứ 7.</li>
-                    <li>Calories mỗi ngày được thiết kế riêng để phục vụ cho tình trạng và nhu cầu riêng của bạn.</li>
-                </ul>
-                <br>
-                <p style="font-style: italic">
-                **Thích hợp cho người ăn kiêng có mục tiêu, muốn thay đổi sức khoẻ hoặc ngoại hình.<br></p>
-                Chọn để nhận báo giá<br>
-                <p style="font-style: italic">(Chưa kèm phí vận chuyển, xem phí vận chuyển <a href="chinhsachgiaohang">tại đây</a>)</p><br>
-                1 bữa/ngày<br>
-                2 bữa/ngày<br>
-            </div>
-        </div>
-    </div>
-    <div id="dacbiet" class="collapse">
-        <div class="product-details section-ptb">
-            <div class="container">
-                <h4 class="heading-4">Gói đặc biệt</h4><br>
-                <p>
-                    Phần ăn được thiết kế riêng theo nhu cầu của khách hàng. Về mặt calo, loại thực phẩm và 
-                    lượng thực phẩm cho 3 loại Macro Nutrients (Tinh bột, Chất đạm, Chất béo).<br>
-                    Chúng tôi có thể phục vụ các phần ăn giàu đạm của vận động viên, phần ăn kiêng tinh bột, kiêng béo 
-                    của một số bệnh lý.<br>
-                    Vui lòng liên hệ với chúng tôi qua Email info@dietdeli.vn hoặc số Zalo: 0389150399 với dòng 
-                    nội dung "Phần ăn đặc biệt" để nhận được tư vấn và báo giá cho dịch vụ này.<br>
-                </p>
-            </div>
-        </div>
-    </div>
-    <!-- End Product Details -->
 
-    <!-- Start Form -->
-    <div class="container pt-5">
-        <form name="khachhangForm" class="p-3 border rounded bg-white">
-            <h3 class="heading-2">Các câu hỏi cho khách hàng để báo giá</h3>
-            <div class="row mb-3">
-                <label class="col-sm-3 col-form-label"><strong>Tuổi</strong></label>
-                <div class="col-sm-9">
-                    <input type="number" max="80" min="15" value="15" class="form-control" name="tuoi">
-                </div>
-            </div>
-            <div class="row mb-3">
-                <label class="col-sm-3 col-form-label"><strong>Giới tính (Sex)</strong></label>
-                <div class="col-sm-9">
-                    <select class="form-select no-nice-select" name="gioitinh">
-                        <option selected disabled>Chọn giới tính</option>
-                        <option value="nam">Nam</option>
-                        <option value="nu">Nữ</option>
-                    </select>
-                </div>
-            </div>
-            <div class="row mb-3">
-                <label class="col-sm-3 col-form-label"><strong>Chiều cao (cm)</strong></label>
-                <div class="col-sm-9">
-                    <input type="number" max="210" min="140" value="140" class="form-control" name="chieucao">
-                </div>
-            </div>
-            <div class="row mb-3">
-                <label class="col-sm-3 col-form-label"><strong>Cân nặng (kg)</strong></label>
-                <div class="col-sm-9">
-                    <input type="number" min="30" value="30" class="form-control" name="cannang">
-                </div>
-            </div>
-            <div class="row mb-3">
-                <label class="col-sm-3 col-form-label"><strong>Tính chất công việc hàng ngày</strong></label>
-                <div class="col-sm-9">
-                    <select class="form-select no-nice-select" name="vandong">
-                        <option selected disabled>Tính chất công việc của bạn bạn gần nhất với ví dụ nào dưới đây</option>
-                        <option value="1">Ngồi là chủ yếu (nhân viên văn phòng, sinh viên, tài xế ...)</option>
-                        <option value="2">Đứng là chủ yếu (giáo viên, bartender, đầu bếp, ...)</option>
-                        <option value="3">Đứng và di chuyển nhẹ nhàng là chủ yếu (tiếp viên hàng không, HLV cá nhân, giám sát công trình, ...)</option>
-                        <option value="4">Vận động thường xuyên trong công việc (nhân viên công trường, giáo viên dạy nhảy, ...)</option>
-                    </select>
-                </div>
-            </div>
-            <div class="row mb-3">
-                <label class="col-sm-3 col-form-label"><strong>Mục tiêu của bạn</strong></label>
-                <div class="col-sm-9">
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="muctieu" value="tangcan">
-                        <label class="form-check-label">Tăng cân</label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="muctieu" value="giamcan">
-                        <label class="form-check-label">Giảm cân</label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="muctieu" value="healthy">
-                        <label class="form-check-label">Ăn uống lành mạnh</label>
-                    </div>
-                </div>
-            </div>
-            <center><input type="submit" class="default-btn"></input></center>
-        </form>
+    <!-- Chiều cao -->
+    <div class="row mb-3">
+        <label class="col-sm-3 col-form-label"><strong>Chiều cao (cm)</strong></label>
+        <div class="col-sm-9">
+            <input type="number" max="210" min="140" value="140" class="form-control" name="chieucao">
+        </div>
     </div>
-    <!-- Close Form-->   
+
+    <!-- Cân nặng -->
+    <div class="row mb-3">
+        <label class="col-sm-3 col-form-label"><strong>Cân nặng (kg)</strong></label>
+        <div class="col-sm-9">
+            <input type="number" min="30" value="30" class="form-control" name="cannang">
+        </div>
+    </div>
+
+    <!-- Tính chất công việc -->
+    <div class="row mb-3">
+        <label class="col-sm-3 col-form-label"><strong>Tính chất công việc hàng ngày</strong></label>
+        <div class="col-sm-9">
+            <select class="form-select no-nice-select" name="vandong">
+                <option value="" selected disabled>Tính chất công việc của bạn bạn gần nhất với ví dụ nào dưới đây</option>
+                <option value="1.2">Ngồi là chủ yếu (nhân viên văn phòng, sinh viên, tài xế ...)</option>
+                <option value="1.3">Đứng là chủ yếu (giáo viên, bartender, đầu bếp, ...)</option>
+                <option value="1.5">Đứng và di chuyển nhẹ nhàng là chủ yếu (tiếp viên hàng không, HLV cá nhân, giám sát công trình, ...)</option>
+                <option value="1.7">Vận động thường xuyên trong công việc (nhân viên công trường, giáo viên dạy nhảy, ...)</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Mục tiêu -->
+    <div class="row mb-3">
+        <label class="col-sm-3 col-form-label"><strong>Mục tiêu của bạn</strong></label>
+        <div class="col-sm-9">
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="muctieu" value="tangcan">
+                <label class="form-check-label">Tăng cân</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="muctieu" value="giamcan">
+                <label class="form-check-label">Giảm cân</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="muctieu" value="healthy">
+                <label class="form-check-label">Ăn uống lành mạnh</label>
+            </div>
+        </div>
+    </div>
+
+    <!-- Button -->
+    <div class="text-center">
+        <button type="button" class="default-btn" onclick="myFunction()">Nhập</button>
+    </div>
+</form>
+</div>
 
     <!-- Start Subscribe Area -->
     <div class="subscribe-area section-ptb-2" style="background-image: url(images/action_bg.jpg);">
     </div>
     <!-- End Subscribe Area -->
-
+     
+    <script src="/js/baogia.js" type="text/javascript"></script>
 <%- include('includes/footer.ejs') %>
-<script>
-
-function expandAndScroll(event) {
-    event.preventDefault(); // Luôn ngăn nhảy link
-
-    const gioitinh = document.getElementsByName("gioitinh")[0].value;
-    const vandongStr = document.getElementsByName("vandong")[0].value;
-    const vandong = vandongStr ? parseFloat(vandongStr) : null;
-    const tuoi = parseFloat(document.getElementsByName("tuoi")[0].value);
-    const chieucao = parseFloat(document.getElementsByName("chieucao")[0].value);
-    const cannang = parseFloat(document.getElementsByName("cannang")[0].value);
-
-    // Lấy mục tiêu từ input radio
-    const muctieuNodeList = document.getElementsByName("muctieu");
-    let muctieu = "";
-    for (let i = 0; i < muctieuNodeList.length; i++) {
-        if (muctieuNodeList[i].checked) {
-            muctieu = muctieuNodeList[i].value;
-            break;
-        }
-    }
-
-    // Kiểm tra thiếu thông tin
-    if (
-        gioitinh === "" || vandongStr === "" || isNaN(tuoi) ||
-        isNaN(chieucao) || isNaN(cannang) || muctieu === ""
-    ) {
-        alert("Vui lòng nhập đầy đủ thông tin trước khi xem các gói phù hợp!");
-        document.getElementsByName("khachhangForm")[0].scrollIntoView({ behavior: "smooth", block: "start" });
-        return;
-    }
-
-    // Nếu đầy đủ thông tin thì mới xử lý tiếp
-    let targetId = event.target.getAttribute("href").substring(1); // Get target div ID
-    let targetElement = document.getElementById(targetId);
-
-    let sections = ["ngay", "tuan", "thang", "dacbiet"];
-
-    sections.forEach(id => {
-        let section = document.getElementById(id);
-        if (section && id !== targetId) {
-            let bsCollapse = new bootstrap.Collapse(section, { toggle: false });
-            bsCollapse.hide();
-        }
-    });
-
-    if (targetElement) {
-        let bsCollapse = new bootstrap.Collapse(targetElement, { toggle: true });
-        setTimeout(() => {
-            targetElement.scrollIntoView({ behavior: "smooth", block: "start" });
-        }, 300);
-    }
-}
-
-function myFunction() {
-    const gioitinh = document.getElementsByName("gioitinh")[0].value;
-    const vandongStr = document.getElementsByName("vandong")[0].value;
-    const vandong = vandongStr ? parseFloat(vandongStr) : null;
-    const tuoi = parseFloat(document.getElementsByName("tuoi")[0].value);
-    const chieucao = parseFloat(document.getElementsByName("chieucao")[0].value);
-    const cannang = parseFloat(document.getElementsByName("cannang")[0].value);
-
-    const muctieuNodeList = document.getElementsByName("muctieu");
-    let muctieu = "";
-
-    for (let i = 0; i < muctieuNodeList.length; i++) {
-        if (muctieuNodeList[i].checked) {
-            muctieu = muctieuNodeList[i].value;
-            break;
-        }
-    }
-
-    if (gioitinh === "" && vandongStr === "" && muctieu === "") {
-        alert("Vui lòng chọn Giới tính, Tính chất công việc và Mục tiêu!");
-    } else if (gioitinh === "" && vandongStr === ""){
-        alert("Vui lòng chọn Giới tính và Tính chất công việc!");
-    } else if (gioitinh === "" && muctieu === ""){
-        alert("Vui lòng chọn Giới tính và Mục tiêu!");
-    } else if (muctieu === "" && vandong === ""){
-        alert("Vui lòng chọn Tính chất công việc và Mục tiêu!");
-    } else if (gioitinh === ""){
-        alert("Vui lòng chọn Giới tính!");
-    } else if (vandongStr === ""){
-        alert("Vui lòng chọn Tính chất công việc!");
-    } else if (muctieu === "") {
-        alert("Vui lòng chọn Mục tiêu!");
-    } else {
-        let muctieuCalo = 0;
-        if(muctieu === "tangcan"){
-            muctieuCalo = 350;
-        } else if (muctieu === "giamcan"){
-            muctieuCalo = -250;
-        }
-
-        let bmr = 0;
-        if(gioitinh === "nam"){
-            bmr = (cannang * 10) + (6.25 * chieucao) - (5 * tuoi) + 5;
-        } else {
-            bmr = (cannang * 10) + (6.25 * chieucao) - (5 * tuoi) - 161;
-        }
-
-        let calo = bmr * vandong + muctieuCalo;
-        recommendGoi(calo, bmr, vandong);
-        document.getElementById("cacgoi").scrollIntoView({ behavior: "smooth" })
-    }
-}
-
-function recommendGoi(calo, bmr, vandong){
-    const tdee = bmr * vandong;
-    if (calo < 1200){
-        document.getElementById("ngay-1-bua").innerHTML = "73.000đ";
-        document.getElementById("ngay-2-bua").innerHTML = "140.000đ";
-        document.getElementById("tuan-1-bua").innerHTML = "408.000đ";
-        document.getElementById("tuan-2-bua").innerHTML = "816.000đ";
-        document.getElementById("thang-1-bua").innerHTML = "1.512.000đ";
-        document.getElementById("thang-2-bua").innerHTML = "3.024.000đ";
-        alert(`BMR của bạn là ${bmr}\nTDEE của bạn là ${tdee}\nNăng lượng calo bạn cần nạp là ${calo}\nRecommend 2 suất 400`);
-        
-    } else if (calo >= 1200 && calo < 1800){
-        document.getElementById("ngay-1-bua").innerHTML = "77.000đ";
-        document.getElementById("ngay-2-bua").innerHTML = "150.000đ";
-        document.getElementById("tuan-1-bua").innerHTML = "438.000đ";
-        document.getElementById("tuan-2-bua").innerHTML = "876.000đ";
-        document.getElementById("thang-1-bua").innerHTML = "1.584.000đ";
-        document.getElementById("thang-2-bua").innerHTML = "3.168.000đ";
-        alert(`BMR của bạn là ${bmr}\nTDEE của bạn là ${tdee}\nNăng lượng calo bạn cần nạp là ${calo}\nRecommend 2 suất 600`);
-    } else {
-        document.getElementById("ngay-1-bua").innerHTML = "80.000đ";
-        document.getElementById("ngay-2-bua").innerHTML = "155.000đ";
-        document.getElementById("tuan-1-bua").innerHTML = "450.000đ";
-        document.getElementById("tuan-2-bua").innerHTML = "900.000đ";
-        document.getElementById("thang-1-bua").innerHTML = "1.680.000đ";
-        document.getElementById("thang-2-bua").innerHTML = "3.360.000đ";
-        alert(`BMR của bạn là ${bmr}\nTDEE của bạn là ${tdee}\nNăng lượng calo bạn cần nạp là ${calo}\nRecommend 2 suất 800`);
-    }
-}
-
-</script>
