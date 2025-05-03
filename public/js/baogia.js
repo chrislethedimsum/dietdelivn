@@ -7,6 +7,7 @@ function myFunction() {
     const tuoi = parseFloat(document.getElementsByName("tuoi")[0].value);
     const chieucao = parseFloat(document.getElementsByName("chieucao")[0].value);
     const cannang = parseFloat(document.getElementsByName("cannang")[0].value);
+    let status = document.getElementById("statusForm");
 
     const muctieuNodeList = document.getElementsByName("muctieu");
     let muctieu = "";
@@ -20,19 +21,19 @@ function myFunction() {
     }
 
     if (gioitinh === "" && vandongStr === "" && muctieu === "") {
-        alert("Vui lòng chọn Giới tính, Tính chất công việc và Mục tiêu!");
+        status.innerText = "Vui lòng chọn Giới tính, Tính chất công việc và Mục tiêu!";
     } else if (gioitinh === "" && vandongStr === ""){
-        alert("Vui lòng chọn Giới tính và Tính chất công việc!");
-    } else if (gioitinh === "" && muctieu === ""){
-        alert("Vui lòng chọn Giới tính và Mục tiêu!");
-    } else if (muctieu === "" && vandong === ""){
-        alert("Vui lòng chọn Tính chất công việc và Mục tiêu!");
+        status.innerText = "Vui lòng chọn Giới tính và Tính chất công việc!";
+    } else if (gioitinh === "" && muctieu == ""){
+        status.innerText = "Vui lòng chọn Giới tính và Mục tiêu!";
+    } else if (muctieu === "" && vandongStr === ""){
+        status.innerText ="Vui lòng chọn Tính chất công việc và Mục tiêu!";
     } else if (gioitinh === ""){
-        alert("Vui lòng chọn Giới tính!");
+        status.innerText = "Vui lòng chọn Giới tính!";
     } else if (vandongStr === ""){
-        alert("Vui lòng chọn Tính chất công việc!");
+        status.innerText = "Vui lòng chọn Tính chất công việc!";
     } else if (muctieu === "") {
-        alert("Vui lòng chọn Mục tiêu!");
+        status.innerText = "Vui lòng chọn Mục tiêu!";
     } else {
         let muctieuCalo = 0;
         muctieutext = "Ăn uống lành mạnh";
@@ -68,38 +69,35 @@ function myFunction() {
 
         let calo = bmr * vandong + muctieuCalo;
         recommendGoi(calo, bmr, vandong);
-        document.getElementById("thongTinKhach").innerHTML = '<div class="p-3"><div style="color:red;">**Chúng tôi đã nhận thông tin khách hàng, mời xem báo giá ! </div><br> Giới tính: ' + gioitinhtext + ' | Tuổi: ' + tuoi + ' | Chiều cao: ' + chieucao + ' | Cân năng: ' + cannang + '| Tính chất công việc: ' + vandongtext + ' | Mục tiêu: ' + muctieutext + '</div> <center><button type="submit" onclick="scrolltokhachhangForm(event)" class="mb-3 default-btn">Nhập lại thông tin</button></center>';
+        document.getElementById("thongTinKhach").innerHTML = '<div class="p-3"><div style="color:red;">**Chúng tôi đã nhận thông tin khách hàng, mời xem báo giá ! </div><br> Giới tính: ' + gioitinhtext + ' | Tuổi: ' + tuoi + ' | Chiều cao: ' + chieucao + ' | Cân năng: ' + cannang + ' | Tính chất công việc: ' + vandongtext + ' | Mục tiêu: ' + muctieutext + '</div> <center><button type="submit" onclick="scrolltokhachhangForm(event)" class="mb-3 default-btn">Nhập lại thông tin</button></center>';
         document.getElementById("cacgoi").scrollIntoView({ behavior: "smooth" })
     }
 }
 
 function recommendGoi(calo, bmr, vandong){
     const tdee = bmr * vandong;
-    if (calo < 1200){
+    if (calo < 1200){ //2 suất 400
         document.getElementById("ngay-1-bua").innerHTML = "73.000đ";
         document.getElementById("ngay-2-bua").innerHTML = "140.000đ";
         document.getElementById("tuan-1-bua").innerHTML = "408.000đ";
         document.getElementById("tuan-2-bua").innerHTML = "816.000đ";
         document.getElementById("thang-1-bua").innerHTML = "1.512.000đ";
         document.getElementById("thang-2-bua").innerHTML = "3.024.000đ";
-        console.log(`BMR của bạn là ${bmr}\nTDEE của bạn là ${tdee}\nNăng lượng calo bạn cần nạp là ${calo}\nRecommend 2 suất 400`);
         
-    } else if (calo >= 1200 && calo < 1800){
+    } else if (calo >= 1200 && calo < 1800){ //2 suất 600
         document.getElementById("ngay-1-bua").innerHTML = "77.000đ";
         document.getElementById("ngay-2-bua").innerHTML = "150.000đ";
         document.getElementById("tuan-1-bua").innerHTML = "438.000đ";
         document.getElementById("tuan-2-bua").innerHTML = "876.000đ";
         document.getElementById("thang-1-bua").innerHTML = "1.584.000đ";
         document.getElementById("thang-2-bua").innerHTML = "3.168.000đ";
-        console.log(`BMR của bạn là ${bmr}\nTDEE của bạn là ${tdee}\nNăng lượng calo bạn cần nạp là ${calo}\nRecommend 2 suất 600`);
-    } else {
+    } else { //2 suất 800
         document.getElementById("ngay-1-bua").innerHTML = "80.000đ";
         document.getElementById("ngay-2-bua").innerHTML = "155.000đ";
         document.getElementById("tuan-1-bua").innerHTML = "450.000đ";
         document.getElementById("tuan-2-bua").innerHTML = "900.000đ";
         document.getElementById("thang-1-bua").innerHTML = "1.680.000đ";
         document.getElementById("thang-2-bua").innerHTML = "3.360.000đ";
-        console.log(`BMR của bạn là ${bmr}\nTDEE của bạn là ${tdee}\nNăng lượng calo bạn cần nạp là ${calo}\nRecommend 2 suất 800`);
     }
 }
 
