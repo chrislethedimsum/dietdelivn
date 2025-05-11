@@ -456,7 +456,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 .then(data => {
                     cart = data;
                     updateTotalMeals();
-                    showMeals(Object.keys(week1).find(key => week1[key]['Day'] === day), day);
+                    showMeals(Object.keys(week1).find(key => week1[key]['Day'] === day), day);``
                 });
         }
 
