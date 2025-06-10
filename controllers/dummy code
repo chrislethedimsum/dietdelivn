@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+        <title>Menu - Diet Deli</title>
+        <link rel="icon" type="image/png" href="/images/favicon.png" />
+        <link rel="stylesheet" href="/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="/css/owl.carousel.min.css" />
+        <link rel="stylesheet" href="/css/all.min.css" />
+        <link rel="stylesheet" href="/css/aos.css" />
+        <link rel="stylesheet" href="/css/jquery.fancybox.min.css" />
+        <link rel="stylesheet" href="/css/nouislider.min.css" />
+        <link rel="stylesheet" href="/css/nice-select.css" />
+        <link rel="stylesheet" href="/css/style.css" />
+    </head>
+    <body>
+        <div class="page-wrapper section-ptb">
+            <div class="container">
+                <% if (userOrdersInWeek && userOrdersInWeek.length > 0) { %>
+                <div
+                    style="
+                        background: #e0ffe0;
+                        border: 1px solid green;
+                        padding: 10px;
+                        margin-bottom: 20px;
+                    "
+                >
+                    Bạn đã đặt món cho tuần này. Bạn có thể thay đổi hoặc hủy
+                    món cho những ngày còn trong hạn.
+                </div>
+                <% } else { %>
+                <div
+                    style="
+                        background: #fffbe0;
+                        border: 1px solid orange;
+                        padding: 10px;
+                        margin-bottom: 20px;
+                    "
+                >
+                    Bạn chưa đặt món cho tuần này. Hãy chọn món trước
+                    <strong>12:00 trưa Chủ nhật</strong>.
+                </div>
+                <% } %>
+                <div class="row">
+                    <div class="col-lg-4 col-md-12 order-lg-1 order-1">
+                        <aside class="sidebar-wrapper">
+                            <!-- Start Cateogiries Widget -->
+                            <div
+                                class="categories-widget mb-4 custom-border p-4"
+                            >
+                                <div class="widget-title-2">
+                                    <h4 class="heading-4">
+                                        Menu (tuần <%= moment(weekStartStr).format("DD/MM/YYYY") %>)
+                                    </h4>
+                                </div>
+                                <div class="widget-nav mt-3">
+                                    <ul>
+                                        <?php foreach ($week1 as $key =>
+                                        $day): if ($key === 'startdate')
+                                        continue; ?>
+                                        <li>
+                                            <a
+                                                href="javascript:void(0);"
+                                                onclick="showMeals(<?= $key ?>, '<?= htmlspecialchars($day['Day']) ?>')"
+                                            >
+                                                <i
+                                                    class="fas fa-angle-right"
+                                                ></i
+                                                ><?= htmlspecialchars($day['Day']) ?>
+                                            </a>
+                                        </li>
+                                        <?php endforeach; ?>
+                                    </ul>
+                                </div>
+                            </div>
+                            <!-- End Cateogiries Widget -->
+                        </aside>
+                    </div>
+                    <div class="col-lg-8 col-md-12 order-lg-2 order-2">
+                        <!-- Start Sorting Form -->
+                        <div
+                            class="shorting-form d-flex justify-content-between bg-semi-white align-items-center p-4"
+                        >
+                            <div class="filter-info">
+                                <p class="mb-0">
+                                    <span id="day-selected">ngày này</span> bạn
+                                    đã chọn:
+                                    <strong
+                                        ><span id="total-meals-day"
+                                            >0</span
+                                        ></strong
+                                    >
+                                    bữa
+                                </p>
+                            </div>
+                            <div class="filter-form-2">
+                                <p class="mb-0">
+                                    Tổng bữa đã chọn trong tuần:
+                                    <strong
+                                        ><span id="total-meals-week"
+                                            >0</span
+                                        ></strong
+                                    >
+                                </p>
+                            </div>
+                        </div>
+                        <!-- End Sorting Form -->
+                        <!-- Start Products -->
+                        <div class="all-products mt-5">
+                            <div class="products-wrapper">
+                                <div id="meal-container" class="row">
+                                    <?php 
+                                $defaultMeals = $week1[$defaultDay];
+                                foreach (['meal1', 'meal2'] as $mealKey): ?>
+                                    <div class="col-lg-6 col-sm-6">
+                                        <div
+                                            class="card border-0 product-card custom-round"
+                                        >
+                                            <div class="card-thumb">
+                                                <a
+                                                    href="product_details.html"
+                                                    class="black-overlay"
+                                                    ><img
+                                                        src="<?= $defaultMeals[$mealKey]['image'] ?>"
+                                                        class="card-img-top"
+                                                        alt="food"
+                                                /></a>
+                                                <a href="#" class="sm-btn"
+                                                    ><i class="fas fa-plus"></i>
+                                                    Đã Chọn</a
+                                                >
+                                                <a href="#" class="sm-btn"
+                                                    ><i class="fas fa-plus"></i>
+                                                    Hủy Chọn</a
+                                                >
+                                            </div>
+                                            <div class="card-body">
+                                                <h6 class="heading-6">
+                                                    <a
+                                                        href="product_details.html"
+                                                        ><?= $defaultMeals[$mealKey]['name'] ?></a
+                                                    >
+                                                </h6>
+                                                <div
+                                                    class="card-meta d-flex py-2"
+                                                >
+                                                    <div
+                                                        class="product-price pl-4"
+                                                    >
+                                                        <span class="a"
+                                                            >Khẩu phần: </span
+                                                        ><span class="b"
+                                                            ><?= $defaultMeals[$mealKey]['nutrient']['servingsize'] ?>
+                                                            cal</span
+                                                        >
+                                                    </div>
+                                                    <div
+                                                        class="product-price pl-4"
+                                                    >
+                                                        <span class="a"
+                                                            >Carb: </span
+                                                        ><span class="b"
+                                                            ><?= $defaultMeals[$mealKey]['nutrient']['carbs'] ?>
+                                                            g</span
+                                                        >
+                                                    </div>
+                                                    <div
+                                                        class="product-price pl-4"
+                                                    >
+                                                        <span class="a"
+                                                            >Protein: </span
+                                                        ><span class="b"
+                                                            ><?= $defaultMeals[$mealKey]['nutrient']['protein'] ?>
+                                                            g</span
+                                                        >
+                                                    </div>
+                                                    <div
+                                                        class="product-price pl-4"
+                                                    >
+                                                        <span class="a"
+                                                            >Fat: </span
+                                                        ><span class="b"
+                                                            ><?= $defaultMeals[$mealKey]['nutrient']['fat'] ?>
+                                                            g</span
+                                                        >
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <?php endforeach; ?>
+                                    <!-- product end -->
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End Products -->
+                    </div>
+                </div>
+                <div
+                    class="search-widget mb-4 py-5 py-sm-4 px-4 custom-round"
+                    style="background-image: url(/images/action_bg.jpg)"
+                >
+                    <center>
+                        <div class="input-wrapper input-btn">
+                            <button type="submit" class="default-btn">
+                                ĐẶT NGAY
+                            </button>
+                        </div>
+                    </center>
+                </div>
+            </div>
+        </div>
+        <!-- End Start -->
+
+        <!-- Start Subscribe Area -->
+        <div
+            class="subscribe-area section-ptb-2"
+            style="background-image: url(/images/action_bg.jpg)"
+        ></div>
+        <!-- End Subscribe Area -->
+
+        
+        <script>
+            const week1 = <?= json_encode($week1) ?>;
+                let cart = []; // Local cart to keep track of meals
+
+                // Show meals for the selected day
+                function showMeals(day, dayName) {
+                    const meals = week1[day];
+                    const container = document.getElementById('meal-container');
+                    container.innerHTML = '';
+
+                    document.getElementById('day-selected').textContent = dayName;
+
+                    ['meal1', 'meal2'].forEach(key => {
+                        const meal = meals[key];
+                        const isSelected = cart.some(item => item.meal === meal.name && item.day === dayName);
+
+                        container.innerHTML += `
+                            <div class="col-lg-6 col-sm-6">
+                                <div class="card border-0 product-card custom-round">
+                                    <div class="card-thumb">
+                                        <a href="product_details.html" class="black-overlay"><img
+                                                src="${meal.image}" class="card-img-top" alt="food"></a>
+                                        <button onclick="${isSelected ? `removeFromCart('${meal.name}', '${dayName}')` : `addToCart('${meal.name}', '${dayName}')`}"
+                                                class="btn ${isSelected ? 'btn-danger' : 'sm-btn'}">
+                                            ${isSelected ? 'Xóa' : '<i class="fas fa-plus"></i> Chọn'}
+                                        </button>
+                                    </div>
+                                    <div class="card-body">
+                                        <h6 class="heading-6"><a href="product_details.html">${meal.name}</a></h6>
+                                        <div class="card-meta d-flex py-2">
+                                            <div class="product-price pl-4">
+                                                <span class="a">Khẩu phần: </span><span class="b">${meal.nutrient.servingsize} cal</span>
+                                            </div>
+                                            <div class="product-price pl-4">
+                                                <span class="a">Carb: </span><span class="b">${meal.nutrient.carbs} g</span>
+                                            </div>
+                                            <div class="product-price pl-4">
+                                                <span class="a">Protein: </span><span class="b">${meal.nutrient.protein} g</span>
+                                            </div>
+                                            <div class="product-price pl-4">
+                                                <span class="a">Fat: </span><span class="b">${meal.nutrient.fat} g</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>`;
+                    });
+                    updateMealCountForDay(dayName);
+                }
+
+                // Add meal to the cart
+                function addToCart(mealName, day) {
+                    const formData = new FormData();
+                    formData.append('ajax_add_to_cart', true);
+                    formData.append('meal_name', mealName);
+                    formData.append('day', day);
+
+                    fetch('', { method: 'POST', body: formData })
+                        .then(response => response.json())
+                        .then(data => {
+                            cart = data;
+                            updateTotalMeals();
+                            showMeals(Object.keys(week1).find(key => week1[key]['Day'] === day), day);
+                        });
+                }
+
+                // Remove meal from the cart
+                function removeFromCart(mealName, day) {
+                    const formData = new FormData();
+                    formData.append('ajax_remove_from_cart', true);
+                    formData.append('meal_name', mealName);
+                    formData.append('day', day);
+
+                    fetch('', { method: 'POST', body: formData })
+                        .then(response => response.json())
+                        .then(data => {
+                            cart = data;
+                            updateTotalMeals();
+                            showMeals(Object.keys(week1).find(key => week1[key]['Day'] === day), day);``
+                        });
+                }
+
+                // Update total meals of the week
+                function updateTotalMeals() {
+                    document.getElementById('total-meals-week').textContent = cart.length;
+                }
+
+                // Update total meals for the selected day
+                function updateMealCountForDay(day) {
+                    const count = cart.filter(item => item.day === day).length;
+                    document.getElementById('total-meals-day').textContent = count;
+                }
+
+                // Initialize the page with the default day's meals
+                document.addEventListener('DOMContentLoaded', () => {
+                    showMeals(<?= $defaultDay ?>, '<?= htmlspecialchars($week1[$defaultDay]['Day']) ?>');
+                });
+        </script>
+        <script src="/js/jquery-3.7.1.min.js" type="text/javascript"></script>
+        <script
+            src="/js/bootstrap.bundle.min.js"
+            type="text/javascript"
+        ></script>
+        <script src="/js/aos.js" type="text/javascript"></script>
+        <script src="/js/owl.carousel.min.js" type="text/javascript"></script>
+        <script
+            src="/js/jquery.fancybox.min.js"
+            type="text/javascript"
+        ></script>
+        <script
+            src="/js/jquery.waypoints.min.js"
+            type="text/javascript"
+        ></script>
+        <script
+            src="/js/jquery.counterup.min.js"
+            type="text/javascript"
+        ></script>
+        <script
+            src="/js/jquery.scrollUp.min.js"
+            type="text/javascript"
+        ></script>
+        <script
+            src="/js/jquery.nice-select.min.js"
+            type="text/javascript"
+        ></script>
+        <script src="/js/nouislider.min.js" type="text/javascript"></script>
+        <script src="/js/main.js" type="text/javascript"></script>
+
+        <script
+            src="/cdn-cgi/scripts/7d0fa10a/cloudflare-static/rocket-loader.min.js"
+            data-cf-settings="a55977ac95d3a61579c11ff4-|49"
+            defer
+        ></script>
+    </body>
+</html>

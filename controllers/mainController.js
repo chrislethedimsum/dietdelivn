@@ -5,12 +5,13 @@ const querystring = require('querystring');
 exports.getBaoGia = (req, res, next) => {
   res.render("main/baogia", {
     pageTitle: "Báo giá",
+    isAuthenticated: req.session.isLoggedIn,
   });
 };
 
 //nhận tất cả thông tin từ form khách hàng ở báo giá
 exports.postBaoGia = async (req, res, next) => {
-    const { sdt, token, gioitinh, tuoi, chieucao, cannang, vandong, muctieu } = req.body;
+    const { phone, token, gender, age, height, weight, activity_level, goal } = req.body;
     const secret = "ES_26ac6b49ca2248bdab0cd14baa743aea";
     if (!token) {
       return res.json({ success: false, message: "Token không tồn tại" });
@@ -35,9 +36,9 @@ exports.postBaoGia = async (req, res, next) => {
   
       // Nếu captcha hợp lệ → lưu số điện thoại
       const guestNew = new guest(
-        null, null, sdt,
-        tuoi, gioitinh, chieucao,
-        cannang, vandong, muctieu
+        null, phone,
+        age, gender, height,
+        weight, goal, activity_level
       );
   
       await guestNew.save();
@@ -52,30 +53,35 @@ exports.postBaoGia = async (req, res, next) => {
 exports.getBaoMatThongTin = (req, res, next) => {
   res.render("main/baomathongtin", {
     pageTitle: "Chính sách bảo mật thông tin",
+    isAuthenticated: req.session.isLoggedIn,
   });
 };
 
 exports.getChinhSachChung = (req, res, next) => {
   res.render("main/chinhsachchung", {
     pageTitle: "Chính sách và quy định chung",
+    isAuthenticated: req.session.isLoggedIn,
   });
 };
 
 exports.getChinhSachGiaoHang = (req, res, next) => {
   res.render("main/chinhsachgiaohang", {
     pageTitle: "Chính sách vận chuyển và giao hàng",
+    isAuthenticated: req.session.isLoggedIn,
   });
 };
 
 exports.getFAQs = (req, res, next) => {
   res.render("main/faqs", {
     pageTitle: "Những câu hỏi thường gặp",
+    isAuthenticated: req.session.isLoggedIn,
   });
 };
 
 exports.getIndex = (req, res, next) => {
   res.render("main/index", {
     pageTitle: "Diet Deli - Ăn kiêng thật dễ dàng",
+    isAuthenticated: req.session.isLoggedIn,
   });
 };
 
@@ -106,7 +112,7 @@ exports.postTuVanSoDienThoaiQuaIndex = async (req, res, next) => {
   
       // Nếu captcha hợp lệ → lưu số điện thoại
       const guestZalo = new guest(
-        null, null, sdt,
+        null, sdt,
         null, null, null,
         null, null, null
       );
@@ -123,23 +129,27 @@ exports.postTuVanSoDienThoaiQuaIndex = async (req, res, next) => {
 exports.getMoiTruong = (req, res, next) => {
   res.render("main/moitruong", {
     pageTitle: "Môi trường",
+    isAuthenticated: req.session.isLoggedIn,
   });
 };
 
 exports.getMuaTheoNhom = (req, res, next) => {
   res.render("main/muatheonhom", {
     pageTitle: "Mua theo nhóm",
+    isAuthenticated: req.session.isLoggedIn,
   });
 };
 
 exports.getQuyDinhThanhToan = (req, res, next) => {
   res.render("main/quydinhthanhtoan", {
     pageTitle: "Quy định thanh toán",
+    isAuthenticated: req.session.isLoggedIn,
   });
 };
 
 exports.getVeChungToi = (req, res, next) => {
   res.render("main/vechungtoi", {
     pageTitle: "Về chúng tôi",
+    isAuthenticated: req.session.isLoggedIn,
   });
 };

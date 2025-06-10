@@ -14,6 +14,10 @@
     "body-parser": "^2.2.0",
     "ejs": "^3.1.10",
     "express": "^5.1.0",
+    "express-mysql-session": "^3.0.3",
+    "express-session": "^1.18.1",
+    "moment": "^2.30.1",
+    "moment-timezone": "^0.5.48",
     "mysql2": "^3.14.1",
     "sweetalert2": "^11.21.0"
   },

@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+        <title><%= pageTitle %> - Diet Deli</title>
+        <link rel="icon" type="image/png" href="/images/favicon.png" />
+        <link rel="stylesheet" href="/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="/css/owl.carousel.min.css" />
+        <link rel="stylesheet" href="/css/all.min.css" />
+        <link rel="stylesheet" href="/css/aos.css" />
+        <link rel="stylesheet" href="/css/jquery.fancybox.min.css" />
+        <link rel="stylesheet" href="/css/nice-select.css" />
+        <link rel="stylesheet" href="/css/style.css" />
+    </head>
+
+    <body>
+        <!-- Preloader start-->
+
+        <div id="preloader">
+            <div class="preloader">
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+        <!-- Preloader end  -->
+
+        <!-- Header Start -->
+        <header class="header">
+            <div class="primary-navigation sticky-header">
+                <div class="container">
+                    <nav class="navbar navbar-expand-md py-2 navbar-light">
+                        <a class="navbar-brand" href="index.html"
+                            ><img src="/images/logoc.png" height="60px"
+                        /></a>
+                    </nav>
+                </div>
+            </div>
+        </header>
+        <!-- Header End -->
+
+        <!-- Start Page -->
+        <div class="start-page">
+            <div class="login-form-wrapper">
+                <div class="container">
+                    <div class="row align-items-center">
+                        <div class="col-md-6 section-ptb py-lg-0">
+                            <div class="login-form p-5 pb-4 mt-5">
+                                <div class="section-title-3 mb-5 text-center">
+                                    <p class="text-hover mb-0">
+                                        Chào mừng quay trở lại !
+                                    </p>
+                                    <h2 class="heading-2">Xin mời đăng nhập</h2>
+                                </div>
+                                <form id="dangnhap">
+                                    <div class="form-group mb-4">
+                                        <label for="user_email">Email</label>
+                                        <input
+                                            type="email"
+                                            id="email"
+                                            name="email"
+                                            class="form-control"
+                                            placeholder="example@gmail.com"
+                                            required
+                                        />
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="user_password"
+                                            >Mật khẩu</label
+                                        >
+                                        <input
+                                            type="password"
+                                            id="password"
+                                            name="password"
+                                            class="form-control"
+                                            placeholder="........"
+                                            required
+                                        />
+                                    </div>
+                                    <div class="form-group mt-3">
+                                        <div class="form-check">
+                                            <input
+                                                class="form-check-input"
+                                                type="checkbox"
+                                                value=""
+                                                id="defaultCheck1"
+                                            />
+                                            <label
+                                                class="form-check-label"
+                                                for="defaultCheck1"
+                                            >
+                                                Ghi nhớ tài khoản
+                                            </label>
+                                            <a href="#" class="float-end"
+                                                >Quên mật khẩu</a
+                                            >
+                                        </div>
+                                    </div>
+                                    <div class="form-group mt-4 mb-0">
+                                        <button
+                                            type="submit"
+                                            class="default-btn w-100"
+                                        >
+                                            Đăng nhập
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                            <div
+                                class="copyright-text-2 pt-5 mt-4 pb-2 text-center"
+                            >
+                                <p>
+                                    Copyright © 2025 <a href="/">Diet Deli</a>.
+                                    All rights reserved.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-md-6 half-column">
+                            <div class="half-full">
+                                <div class="content">
+                                    <h1 class="heading-one-alt text-white pt-5">
+                                        Ăn kiêng thật dễ dàng với
+                                        <span>Diet Deli</span>
+                                    </h1>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End Page -->
+        <script>
+            document
+                .getElementById("dangnhap")
+                .addEventListener("submit", async function (e) {
+                    e.preventDefault();
+
+                    const email = document.getElementById("email").value;
+                    const password = document.getElementById("password").value;
+
+                    let widgetId = null;
+
+                    const result = await Swal.fire({
+                        title: "Xác minh không phải là robot",
+                        html: `
+                          <p>Mời bạn hoàn thành captcha để xác minh.</p>
+                          <div id="captcha-container">
+                            <div id="hcaptcha-container"></div>
+                          </div>
+                        `,
+                        showCancelButton: true,
+                        confirmButtonText: "Gửi",
+                        cancelButtonText: "Hủy",
+                        focusConfirm: false,
+                        didOpen: () => {
+                            widgetId = hcaptcha.render("hcaptcha-container", {
+                                sitekey: "a574db68-d5a0-445c-b0a6-ae4ca3bc3a54", // ← thay bằng Site Key thật
+                                theme: "light",
+                            });
+                        },
+                        preConfirm: () => {
+                            const token = hcaptcha.getResponse(widgetId);
+                            if (!token) {
+                                Swal.showValidationMessage(
+                                    "Vui lòng hoàn thành Captcha trước khi gửi."
+                                );
+                                return false;
+                            }
+                            return token;
+                        },
+                    });
+
+                    if (!result.isConfirmed || !result.value) {
+                        Swal.fire("Đã hủy", "Bạn đã hủy đăng ký.", "info");
+                        return;
+                    }
+
+                    const token = result.value;
+
+                    try {
+                        Swal.fire({
+                            title: "Đang xử lý...",
+                            text: "Vui lòng chờ hệ thống xác minh và đăng nhập.",
+                            allowOutsideClick: false,
+                            allowEscapeKey: false,
+                            didOpen: () => {
+                                Swal.showLoading();
+                            },
+                        });
+                        const response = await fetch("/user/login", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify({
+                                email: email,
+                                password: password,
+                                token: token,
+                            }),
+                        });
+                        const data = await response.json();
+
+                        Swal.close();
+
+                        if (data.success) {
+                            Swal.fire(
+                                "Đăng nhập thành công!",
+                                "Chúng tôi sẽ di chuyển bạn đến trang tài khoản.",
+                                "success"
+                            ).then(() => {
+                                window.location.href = "/user/account";
+                            });
+                        } else {
+                            Swal.fire(
+                                "Thất bại!",
+                                data.message || "Xác minh thất bại.",
+                                "error"
+                            );
+                        }
+                    } catch (error) {
+                        console.error("Lỗi khi gửi:", error);
+                        Swal.close(); // Đảm bảo tắt loading nếu có lỗi
+                        Swal.fire(
+                            "Lỗi",
+                            "Không thể gửi dữ liệu. Vui lòng thử lại.",
+                            "error"
+                        );
+                    }
+                });
+        </script>
+        <script src="/js/jquery-3.7.1.min.js" type="text/javascript"></script>
+        <script
+            src="/js/bootstrap.bundle.min.js"
+            type="text/javascript"
+        ></script>
+        <script src="/js/aos.js" type="text/javascript"></script>
+        <script src="/js/owl.carousel.min.js" type="text/javascript"></script>
+        <script
+            src="/js/jquery.fancybox.min.js"
+            type="text/javascript"
+        ></script>
+        <script
+            src="/js/jquery.waypoints.min.js"
+            type="text/javascript"
+        ></script>
+        <script
+            src="/js/jquery.counterup.min.js"
+            type="text/javascript"
+        ></script>
+        <script
+            src="/js/jquery.scrollUp.min.js"
+            type="text/javascript"
+        ></script>
+        <script
+            src="/js/jquery.nice-select.min.js"
+            type="text/javascript"
+        ></script>
+        <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script src="/js/main.js" type="text/javascript"></script>
+    </body>
+</html>

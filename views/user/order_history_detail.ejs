@@ -1,0 +1,25 @@
+<h2>Chi tiết tuần <%= week_start_date %></h2>
+<% if (isCurrentWeek) { %>
+  <button id="editBtn">Sửa / Thêm món</button>
+<% } %>
+<% console.log('order hiển thị trên browser',orders) %>
+<table>
+  <thead>
+    <tr>
+      <th>Ngày ăn</th>
+      <th>Món 1</th>
+      <th>Món 2</th>
+      <th>Thời gian chỉnh sửa gần nhất</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% orders.forEach(order => { %>
+      <tr>
+        <td><%= capitaliseVN(moment(order.meal_date).format("dddd DD/MM/YYYY")) %></td>
+        <td><%= order.meal1 ? order.meal1.name : '' %></td>
+        <td><%= order.meal2 ? order.meal2.name : '' %></td>
+        <td><%=  moment.utc(order.changed_at).format("HH:mm:ss DD/MM/YYYY") %></td>
+      </tr>
+    <% }) %>
+  </tbody>
+</table>

@@ -369,7 +369,8 @@ section
     height: 5px;
     width: 100%;
     background-image: url(../images/border.png);
-    background-repeat: no-repeat; }
+    background-repeat: no-repeat; 
+    background-position: center center; }
 
 .widget-title-2 {
   position: relative;

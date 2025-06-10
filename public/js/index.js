@@ -5,7 +5,6 @@ document
 
     const sdt = document.getElementById("sdt").value.trim();
     const phoneRegex = /^0\d{9}$/;
-    console.log("SĐT kiểm tra:", sdt); // ← Xem log để kiểm chứng
 
     if (!phoneRegex.test(sdt)) {
       Swal.fire({

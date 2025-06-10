@@ -1,40 +1,38 @@
 const db = require("../util/database");
 
 module.exports = class Guest {
-  constructor(id, name, sdt, tuoi, gioitinh, chieucao, cannang, tinhchatcongviec, muctieu) {
+  constructor(id, phone, age, gender, height, weight, goal, activity_level) {
     this.id = id;
-    this.name = name;
-    this.sdt = sdt;
-    this.tuoi = tuoi;
-    this.gioitinh = gioitinh;
-    this.chieucao = chieucao;
-    this.cannang = cannang;
-    this.tinhchatcongviec = tinhchatcongviec;
-    this.muctieu = muctieu;
+    this.phone = phone;
+    this.age = age;
+    this.gender = gender;
+    this.height = height;
+    this.weight = weight;
+    this.goal = goal;
+    this.activity_level = activity_level;
   }
 
   save() {
       // Insert nếu chưa có id
       return db.execute(
-        "INSERT INTO guest (name, sdt, tuoi, gioitinh, chieucao, cannang, tinhchatcongviec, muctieu) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+        "INSERT INTO guests (phone, age, gender, height, weight, goal, activity_level) VALUES (?, ?, ?, ?, ?, ?, ?)",
         [
-          this.name,
-          this.sdt,
-          this.tuoi,
-          this.gioitinh,
-          this.chieucao,
-          this.cannang,
-          this.tinhchatcongviec,
-          this.muctieu
+          this.phone,
+          this.age,
+          this.gender,
+          this.height,
+          this.weight,
+          this.goal,
+          this.activity_level
         ]
       );
   }
 
   static xoaMonKhoiData(id) {
-    return db.execute("DELETE FROM cacmonan WHERE id = ?", [id]);
+    return db.execute("DELETE FROM guests WHERE id = ?", [id]);
   }
 
   static fetchAll() {
-    return db.execute("SELECT * FROM cacmonan");
+    return db.execute("SELECT * FROM guests");
   }
 };

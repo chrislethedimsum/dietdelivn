@@ -1,0 +1,137 @@
+<%- include('../includes/header.ejs') %>
+    <!-- Start Page -->
+    <div class="page-start section-ptb">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 pe-3">
+                    <div class="sidebar-wrapper">
+                        <!-- Start Chef Widget -->
+                        <div class="author-widget custom-border p-4 mb-5 p-sm-3">
+<% console.log("User:", user); %>
+                            <div class="author-info text-center mt-3">
+                                <div class="widget-text">
+                                    <p class="mb-0">Xin chào, <h6 class="heading-6 text-hover"><%= user.name %></h6></p>
+                                    <p class="mb-0 border-bottom">Email: <%= user.email %></p>
+                                    <p class="mb-0 border-bottom">Số điện thoại: <%= user.phone %></p>
+                                    <p class="mb-0 border-bottom">Địa chỉ: <%= user.address %></p>
+                                    <p class="mb-0 border-bottom">Tuổi: <%= user.age %> tuổi</p>
+                                    <p class="mb-0 border-bottom">Chiều cao: <%= user.height %> cm</p>
+                                    <p class="mb-0 border-bottom">Cân nặng: <%= user.weight %> kg</p>
+                                    <p class="mb-0 border-bottom">Giới tính: <%= user.gender %></p>
+                                    <p class="mb-0 border-bottom">Mục tiêu: <%= user.goal %></p>
+                                    <a href="#" class="default-btn-alt mt-3"> <i class="fas fa-pencil-alt"></i> Sửa thông tin</a>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End Chefr Widget -->
+                         <!-- Start Chef Widget -->
+                        <div class="author-widget ">
+                            <center><a href="/user/datmon" class="big-btn"> <i class="fas fa-utensils"></i> Đặt món ăn</a></center>
+                        </div>
+                        <!-- End Chefr Widget -->
+                         <!-- Start Cateogiries Widget -->
+                        <div class="categories-widget mb-5 custom-border p-4 p-sm-3">
+                            <div class="widget-title-2">
+                                <h4 class="heading-4">Gói ăn hiện tại</h4>
+                            </div>
+                            <% if (user_package.is_active === 1) { %>
+                                <div class="widget-nav mt-3">
+                                    <ul>
+                                        <li>Gói: <%= meal_package.name %></li>
+                                        <li>Loại: <%= meal_package.meals_per_day %> bữa/ngày <%= meal_package.calories_per_meal %> kcal</li>
+                                        <li>Ngày ăn còn lại: <%= user_package.remaining_days %></li>
+                                        <li>Thời gian bắt đầu: <%= moment(user_package.start_date).format("DD/MM/YYYY") %></li>
+                                        <li>Thời gian kết thúc: <%= moment(user_package.end_date).format("DD/MM/YYYY") %></li>
+                                    </ul>
+                                </div>
+                            <% } else { %>
+                                <div class="widget-nav mt-3">
+                                    <ul>
+                                        <li>Bạn chưa có hoặc đã hết gói ăn. Liên hệ bọn mình để gia hạn nhé.</li>
+                                    </ul>
+                                </div>
+                            <% } %>
+                        </div>
+                        <!-- End Cateogiries Widget -->
+                        <!-- Start Cateogiries Widget -->
+                        <div class="categories-widget mb-5 custom-border p-4 p-sm-3">
+                            <div class="widget-title-2">
+                                <h4 class="heading-4">Theo dõi tiến trình</h4>
+                            </div>
+                            <img src="/images/track_progress.jpg" alt="Track Progress" class="img-fluid mt-3 mb-3" />
+                        </div>
+                        <!-- End Cateogiries Widget -->
+                        <!-- Start Cateogiries Widget -->
+                        <div class="categories-widget mb-5 custom-border p-4 p-sm-3">
+                            <div class="widget-title-2">
+                                <h4 class="heading-4">Mục lục</h4>
+                            </div>
+                            <div class="widget-nav mt-3">
+                                <ul>
+                                    <li><a href="#"><i class="fas fa-angle-right"></i>Past Order</a></li>
+                                    <li><a href="#"><i class="fas fa-angle-right"></i>Track Order</a></li>
+                                    <li><a href="#"><i class="fas fa-angle-right"></i>Offers</a></li>
+                                    <li><a href="#"><i class="fas fa-angle-right"></i>Payment</a></li>
+                                    <li><a href="#"><i class="fas fa-angle-right"></i>Address</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <!-- End Cateogiries Widget -->
+                    </div>
+                </div>
+                <div class="col-lg-8">
+                    <div class="all-orders">
+                        <div class="section-title-3 mb-5">
+                            <h2 class="heading-2">Các tuần đã đặt</h2>
+                        </div>
+                        <% if(weeks) { %>
+                            <% for (const week of weeks_data) { %>
+                            <div class="orders-history mb-5">
+                                <div class="single-order d-flex align-items-center">
+                                    <div class="order-thumb me-3">
+                                        <a href="#"><img src="/images/order_thumb_01.jpg" alt="order one"
+                                                class="img-fluid" /></a>
+                                    </div>
+                                    <div class="order-content">
+                                        <h5 class="heading-5"><a href="#">Tuần bắt đầu <%= moment(week.week_start_date).format('DD/MM/YYYY ') %></a></h5>
+                                        <div class="order-info">
+                                            <p><i class="fas fa-map-marker-alt"></i> Nyay Marg, Bodakdev, Ahmedabad, Gujarat
+                                                380054</p>
+                                            <p><span class="pr-4"><i class="fas fa-calendar"></i> #12457CH</span> <span> <i
+                                                        class="fas fa-history"></i> 7 March, 2020 7:30PM</span></p>
+                                            <p class="post-cn">1Chicken Wing x 1Chicken Cheese pizza x 1Mango Mojito</p>
+                                        </div>
+                                        <div class="order-action d-flex justify-content-between">
+                                            <div class="payment-amount"><b>Total Paid:</b> <span>$100</span></div>
+                                            <div class="action-btns">
+                                                <a href="#" class="default-btn-alt mr-4"><i class="fas fa-question"></i>
+                                                    Help</a>
+                                                <a href="#" class="default-btn"><i class="fas fa-circle-notch"></i>
+                                                    Reorder</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <% } %>
+                        <% } else { %>
+                            <div class="section-title-3 mb-5 text-center">
+                                <p class="heading-2">Bạn chưa đặt tuần nào</p>
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Page -->
+
+    <!-- Start Subscribe Area -->
+    <div class="subscribe-area section-ptb-2" style="background-image: url(/images/action_bg.jpg);">
+        <div class="container">
+            <div class="row align-items-center">
+            </div>
+        </div>
+    </div>
+    <!-- End Subscribe Area -->
+<%- include('../includes/footer.ejs') %>

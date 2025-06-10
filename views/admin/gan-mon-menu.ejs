@@ -1,0 +1,38 @@
+<form action="/admin/gan-mon-menu" method="POST">
+  <label>Chọn tuần:</label>
+  <select name="menuId" required>
+    <% menus.forEach(menu => { %>
+      <option value="<%= menu.id %>"><%= moment(menu.week_start_date).format('YYYY-MM-DD'); %></option>
+    <% }) %>
+  </select>
+  <table border="1">
+    <tr>
+      <th>Ngày</th>
+      <th>Slot 1</th>
+      <th>Slot 2</th>
+    </tr>
+    <% const days = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']; %>
+    <% days.forEach((day, i) => { %>
+      <tr>
+        <td><%= day %></td>
+        <td>
+          <select name="meals[<%= day %>][1]" required>
+            <option value="">--Chọn món--</option>
+            <% meals.forEach(meal => { %>
+              <option value="<%= meal.id %>"><%= meal.name %></option>
+            <% }) %>
+          </select>
+        </td>
+        <td>
+          <select name="meals[<%= day %>][2]" required>
+            <option value="">--Chọn món--</option>
+            <% meals.forEach(meal => { %>
+              <option value="<%= meal.id %>"><%= meal.name %></option>
+            <% }) %>
+          </select>
+        </td>
+      </tr>
+    <% }) %>
+  </table>
+  <button type="submit">Gán tất cả món cho tuần</button>
+</form>

@@ -1,5 +1,12 @@
 const monAn = require("../models/monan");
 const Giohang = require("../models/giohang");
+const nguoiDung = require("../models/user");
+const mealPackage = require("../models/mealpackage");
+const userPackage = require("../models/userpackage");
+const weeklyMenu = require("../models/weeklymenu");
+const dailyMenuItem = require("../models/dailymenuitem")
+const moment = require("moment");
+require("moment/locale/vi");
 
 exports.getMonAn = (req, res, next) => {
   monAn
@@ -8,6 +15,7 @@ exports.getMonAn = (req, res, next) => {
       res.render("admin/monan", {
         monan: rows,
         pageTitle: "Tổng hợp các món ăn",
+        isAuthenticated: req.isLoggedIn
       });
     })
     .catch((err) => console.log(err));
@@ -29,6 +37,7 @@ exports.getSuaMon = (req, res, next) => {
         monan: monan,
         pageTitle: "Sữa món ăn",
         editing: editMode,
+        isAuthenticated: req.isLoggedIn
       });
     })
     .catch((err) => console.log(err));
@@ -69,6 +78,7 @@ exports.getThemMonAn = (req, res, next) => {
   res.render("admin/themmonan", {
     pageTitle: "Thêm món ăn",
     editing: false,
+    isAuthenticated: req.isLoggedIn
   });
 };
 
@@ -127,6 +137,7 @@ exports.getGioHang = (req, res, next) => {
         pageTitle: "Giỏ Hàng",
         cacmonan: monAnTrongGio,
         tongCalo: gioHang.tongCalo,
+        isAuthenticated: req.isLoggedIn
       });
     });
   });
@@ -150,4 +161,99 @@ exports.postXoaMonAnKhoiGioHang = (req, res, next) => {
     Giohang.xoaMonTrongGio(monId, monan.servingsize);
     res.redirect("/admin/giohang");
   });
+};
+
+//Thêm người dùng
+exports.getUser = (req, res, next) => {
+  nguoiDung.fetchAll()
+    .then(([rows, fieldData]) => {
+      res.render("admin/users", {
+        users: rows,
+        pageTitle: "Tất cả người dùng",
+      });
+    })
+    .catch((err) => console.log(err));
+};
+
+// Gán gói ăn cho người dùng
+exports.getGanGoiAn = async (req, res, next) => {
+  try {
+    const [users] = await nguoiDung.fetchAll();
+    const [packages] = await mealPackage.fetchAll();
+    res.render("admin/gan-goi-an", {
+      users,
+      packages,
+      pageTitle: "Gán gói ăn cho người dùng",
+    });
+  } catch (err) {
+    console.error(err);
+    res.redirect("/admin/users");
+  }
+};
+
+exports.postGanGoiAn = async (req, res, next) => {
+  const { userId, packageId, startDate } = req.body;
+  try {
+    // Lấy duration_days từ meal_packages
+    const [pkgRows] = await mealPackage.findById(packageId);
+    const duration = pkgRows[0].duration_days;
+    const endDate = new Date(startDate);
+    endDate.setDate(endDate.getDate() + duration * 2);
+
+    await userPackage.create({
+      user_id: userId,
+      package_id: packageId,
+      start_date: startDate,
+      end_date: endDate.toISOString().slice(0, 10),
+      remaining_days: duration
+    });
+
+    // TODO: Gửi email/thông báo cho user
+
+    res.redirect("/admin/users");
+  } catch (err) {
+    console.error(err);
+    res.redirect("/admin/gan-goi-an");
+  }
+};
+
+// Gán món ăn vào menu tuần
+exports.getGanMonVaoMenu = async (req, res, next) => {
+  try {
+    const [menus] = await weeklyMenu.fetchAll();
+    const [meals] = await monAn.fetchAll();
+    res.render("admin/gan-mon-menu", {
+      menus,
+      meals,
+      pageTitle: "Gán món ăn vào menu tuần",
+      moment,
+    });
+  } catch (err) {
+    console.error(err);
+    res.redirect("/admin/monan");
+  }
+};
+
+exports.postGanMonVaoMenu = async (req, res, next) => {
+  const { menuId, meals } = req.body;
+  try {
+    const days = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    for (const day of days) {
+      for (const slot of [1,2]) {
+        const mealId = meals?.[day]?.[slot - 1];
+        if (mealId) {
+          await dailyMenuItem.create({
+            menu_id: menuId,
+            day_of_week: day,
+            meal_slot: slot,
+            meal_id: mealId,
+          });
+        }
+      }
+    }
+    res.redirect("/admin/gan-mon-menu");
+  } catch (err) {
+    console.error(err);
+    res.redirect("/admin/gan-mon-menu");
+  }
 };

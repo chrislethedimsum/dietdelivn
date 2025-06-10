@@ -1,0 +1,17 @@
+<form action="/admin/gan-goi-an" method="POST">
+  <label>Chọn người dùng:</label>
+  <select name="userId" required>
+    <% users.forEach(user => { %>
+      <option value="<%= user.id %>"><%= user.name %> - <%= user.email %></option>
+    <% }) %>
+  </select>
+  <label>Chọn gói ăn:</label>
+  <select name="packageId" required>
+    <% packages.forEach(pkg => { %>
+      <option value="<%= pkg.id %>"><%= pkg.name %> - <%= pkg.calories_per_meal %>kcal <%= pkg.meals_per_day %> bữa/ngày</option>
+    <% }) %>
+  </select>
+  <label>Ngày bắt đầu:</label>
+  <input type="date" name="startDate" required>
+  <button type="submit">Gán gói ăn</button>
+</form>

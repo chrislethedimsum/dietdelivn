@@ -1,0 +1,438 @@
+<!-- prettier-ignore -->
+<% const orderMap={};
+  if (userOrdersInWeek) { 
+    userOrdersInWeek.forEach(o=> { 
+      const mealDateFormatted = moment(o.meal_date).format("YYYY-MM-DD"); 
+      orderMap[mealDateFormatted] = o; 
+    }); 
+  } // Tìm ngày còn trong hạn đặt món (từ today -> cuối tuần)
+  const momentNow = moment(now).format("YYYY-MM-DD"); 
+  const startDate = moment(start_date_moment).startOf('day'); 
+  const availableDays = days.map((dayName, index) => {
+    const date = moment(weekStartStr).add(index, 'days');
+    const isAfterStart = date.isSameOrAfter(startDate, 'day'); 
+    const isAfterToday = date.isSameOrAfter(moment(now), 'day'); 
+    return {
+      name: dayName,
+      date,
+      formatted: date.format("DD/MM/YYYY"),
+      isAvailable: isAfterStart && isAfterToday,
+    };
+  }).filter(d => d.isAvailable);
+  const firstAvailable = availableDays[0]; %>
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+        <title>Menu - Diet Deli</title>
+        <link rel="icon" type="image/png" href="/images/favicon.png" />
+        <link rel="stylesheet" href="/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="/css/owl.carousel.min.css" />
+        <link rel="stylesheet" href="/css/all.min.css" />
+        <link rel="stylesheet" href="/css/aos.css" />
+        <link rel="stylesheet" href="/css/jquery.fancybox.min.css" />
+        <link rel="stylesheet" href="/css/nouislider.min.css" />
+        <link rel="stylesheet" href="/css/nice-select.css" />
+        <link rel="stylesheet" href="/css/style.css" />
+        <style>
+            .widget-nav ul li a.active {
+                color: #fe771c;
+                padding-left: 10px;
+            }
+            .fade-in {
+              opacity: 0;
+              transition: opacity 1s ease-in-out;
+            }
+
+            .fade-in.visible {
+              opacity: 1;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="page-wrapper section-ptb">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-4 col-md-12 order-lg-1 order-1">
+                        <aside class="sidebar-wrapper">
+                            <!-- Start Cateogiries Widget -->
+                            <div class="categories-widget mb-4 custom-border p-4">
+                                <div class="widget-title-2">
+                                    <h4 class="heading-4">Menu (tuần <%= moment(weekStartStr).format("DD/MM/YYYY") %>)</h4>
+                                </div>
+                                <div class="widget-nav mt-3">
+                                    <ul>
+                                        <% days.forEach((dayName, index)=> { 
+                                          const meals = menuByDay[dayName]; 
+                                          if (!meals) return; 
+                                          const actualDate = moment(weekStartStr).add(index, 'days'); 
+                                          const formattedDate = actualDate.format("DD/MM/YYYY"); 
+                                          const isPast = actualDate.isBefore(moment(now), 'day');
+                                          const isBeforeStart = actualDate.isBefore(start_date_moment, 'day');
+                                          const isDisabled = isPast || isBeforeStart; %>
+                                        <li>
+                                            <% if (!isDisabled) { %>
+                                            <a
+                                                href="javascript:void(0);"
+                                                onclick="showMeals('<%= dayName %>', '<%= formattedDate %>', this)"
+                                            >
+                                                <i class="fas fa-angle-right"></i>
+                                                Thứ <%= index + 2 %> (<%= formattedDate %>)
+                                            </a>
+                                            <% } else { %>
+                                            <span class="text-muted">
+                                                <i class="fas fa-angle-right"></i>
+                                                Thứ <%= index + 2 %> (<%= formattedDate %>)
+                                            </span>
+                                            <% } %>
+                                        </li>
+                                        <% }); %>
+                                    </ul>
+                                </div>
+                            </div>
+                            <!-- End Cateogiries Widget -->
+                        </aside>
+                    </div>
+                    <div class="col-lg-8 col-md-12 order-lg-2 order-2">
+                        <!-- Start Sorting Form -->
+                        <div class="shorting-form d-flex justify-content-between bg-semi-white align-items-center p-4">
+                            <div class="filter-info">
+                                <p>Các ngày đã được đặt: <strong>Chưa có</strong></p>
+                            </div>
+                            <div class="filter-form">
+                                <p>
+                                    Tổng bữa đã chọn trong tuần:
+                                    <strong id="total-meals-week">0</strong>
+                                    (<span id="total-meals-day"><%= meals_per_day %></span> bữa/ngày)
+                                </p>
+                            </div>
+                        </div>
+                        <!-- End Sorting Form -->
+                        <% if (availableDays.length===0) { %>
+                        <div style="background: #fbe0e0; border: 1px solid red; padding: 10px; margin-bottom: 20px">
+                            Tuần này không còn ngày nào trống để đặt món. Hẹn bạn tuần sau nhé!
+                        </div>
+                        <% } else if (userOrdersInWeek && userOrdersInWeek.length> 0) { %>
+                        <div style="background: #e0ffe0; border: 1px solid green; padding: 10px; margin-bottom: 20px">
+                            Bạn đã đặt món cho tuần này. Bạn có thể thay đổi hoặc hủy món cho những ngày còn trong hạn.
+                        </div>
+                        <% } else { %>
+                        <div style="background: #fffbe0; border: 1px solid orange; padding: 10px; margin-bottom: 20px">
+                            Bạn chưa đặt món cho tuần này. Hãy chọn món trước <strong>12:00 trưa Chủ nhật</strong>.
+                        </div>
+                        <% } %> 
+                        <!-- Start Products -->
+                        <div class="all-products mt-5">
+                            <div class="products-wrapper">
+                                <div id="meal-container" class="row"></div>
+                            </div>
+                        </div>
+                        <!-- End Products -->
+                    </div>
+                </div>
+                <div class="search-widget mb-4 py-5 py-sm-4 px-4 custom-round" style="background-image: url(/images/action_bg.jpg)">
+                    <center>
+                        <div class="input-wrapper input-btn">
+                            <button type="submit" class="default-btn">ĐẶT NGAY</button>
+                        </div>
+                    </center>
+                </div>
+            </div>
+        </div>
+        <!-- End Start -->
+
+        <!-- Start Subscribe Area -->
+        <div class="subscribe-area section-ptb-2" style="background-image: url(/images/action_bg.jpg)"></div>
+        <!-- End Subscribe Area -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+        <script>
+          const menuByDay = <%- JSON.stringify(menuByDay) %>;
+          const dayDates = <%- JSON.stringify(dayDates) %>;
+          const mealsPerDay = <%= meals_per_day %>;
+          const days = <%- JSON.stringify(days) %>;
+          const userPackageId = <%= user_package_id %>;
+
+          let cart = <%- JSON.stringify(cartFromDb || []) %>;
+          console.log("Cart loaded from DB:", cart);
+
+          function showMeals(dayName, dateStr, el = null, withFade = true) {
+            const container = document.getElementById('meal-container');
+            if (!container) return;
+
+
+            if (withFade) {
+              container.classList.remove('fade-in', 'visible');
+              container.style.opacity = 0;
+            }
+
+            let html = '';
+            const dayMeals = menuByDay[dayName];
+            if (!dayMeals) return;
+
+            // Active menu highlight
+            document.querySelectorAll('.widget-nav ul li a').forEach(a => a.classList.remove('active'));
+            if (el) el.classList.add('active');
+
+            const daySelectedEl = document.getElementById('day-selected');
+            if (daySelectedEl) {
+              daySelectedEl.textContent = `${dayName} (${dateStr})`;
+            }
+
+            const dayISO = moment(dateStr, "DD/MM/YYYY", true).isValid()
+              ? moment(dateStr, "DD/MM/YYYY").format("YYYY-MM-DD")
+              : moment(dateStr).format("YYYY-MM-DD");
+
+            if (mealsPerDay === 1) {
+              ['1', '2'].forEach(slot => {
+                const meal = dayMeals[slot];
+                if (!meal) return;
+
+                const isSelected = cart.find(item => item.day === dayISO && item.slot == slot);
+                const buttonText = isSelected ? "Xóa" : "Chọn";
+                const buttonClass = isSelected ? "btn-danger" : "btn-success";
+
+                html += `
+                  <div class="col-lg-6 col-sm-6">
+                    <div class="card border-0 product-card custom-round">
+                      <div class="card-thumb">
+                        <img src="${meal.meal_image}" class="card-img-top" alt="food" />
+                        <button class="btn btn-sm ${buttonClass}" onclick="toggleMeal('${dayName}', '${dateStr}', ${slot}, '${meal.meal_name}', '${meal.meal_id}')">
+                          <i class="fas fa-${isSelected ? 'times' : 'plus'}"></i> ${buttonText}
+                        </button>
+                      </div>
+                      <div class="card-body">
+                        <h6 class="heading-6">${meal.meal_name}</h6>
+                        <div class="card-meta d-flex py-2">
+                          <div class="product-price pl-4">
+                            <span class="a">Thông tin: </span>
+                            <span class="b">${meal.meal_description}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>`;
+              });
+            } else {
+              ['1', '2'].forEach(slot => {
+                const meal = dayMeals[slot];
+                if (!meal) return;
+
+                html += `
+                  <div class="col-lg-6 col-sm-6">
+                    <div class="card border-0 product-card custom-round">
+                      <div class="card-thumb">
+                        <img src="${meal.meal_image}" class="card-img-top" alt="food" />
+                      </div>
+                      <div class="card-body">
+                        <h6 class="heading-6">${meal.meal_name}</h6>
+                        <div class="card-meta d-flex py-2">
+                          <div class="product-price pl-4">
+                            <span class="a">Thông tin: </span>
+                            <span class="b">${meal.meal_description}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>`;
+              });
+
+              const isSelected = cart.find(item => item.day === dayISO);
+              const buttonText = isSelected ? "Xóa ngày ăn" : "Chọn ngày ăn";
+              const buttonClass = isSelected ? "btn-danger" : "btn-success";
+
+              html += `
+                <div class="col-12 text-center mt-3">
+                  <button class="btn ${buttonClass}" onclick="toggleFullDay('${dayName}', '${dateStr}')">
+                    ${buttonText}
+                  </button>
+                </div>`;
+            }
+
+            // Gán nội dung rồi delay để apply hiệu ứng
+            container.innerHTML = html;
+
+            // Kích hoạt hiệu ứng sau khi DOM đã render
+            if (withFade) {
+              requestAnimationFrame(() => {
+                container.classList.add('fade-in');
+                requestAnimationFrame(() => {
+                  container.classList.add('visible');
+                  container.style.opacity = 1;
+                });
+              });
+            }
+
+            updateSummary();
+          }
+
+          document.querySelectorAll('.choose-day-btn').forEach(btn => {
+              btn.addEventListener('click', () => {
+                const date = btn.getAttribute('data-date');
+
+                if (mealsPerDay === 2) {
+                  const index = cart.findIndex(item => item.day === date);
+                  if (index >= 0) {
+                    cart.splice(index, 1); // Đã chọn rồi → hủy
+                    btn.textContent = 'Chọn ngày ăn';
+                    btn.classList.remove('active');
+                  } else {
+                    cart.push({ day: date }); // Thêm ngày mới
+                    btn.textContent = 'Xóa ngày ăn';
+                    btn.classList.add('active');
+                  }
+                }
+
+                updateSummary(); // Cập nhật lại phần tóm tắt
+              });
+            });
+          
+          // Với user có meals_per_day = 1
+          function toggleMeal(dayName, day, slot, name, meal_id) {
+            // Detect định dạng
+            let dayISO = moment(day, "DD/MM/YYYY", true).isValid()
+              ? moment(day, "DD/MM/YYYY").format("YYYY-MM-DD")
+              : moment(day).format("YYYY-MM-DD"); // fallback if already ISO
+
+            const existingIndex = cart.findIndex(item => item.day === dayISO && item.slot == slot);
+
+            if (existingIndex !== -1) {
+              cart.splice(existingIndex, 1);
+            } else {
+              cart = cart.filter(item => item.day !== dayISO); // chỉ 1 slot/ngày
+              cart.push({ day: dayISO, slot, name, meal_id });
+            }
+
+            console.table(cart);
+
+            const formattedDate = moment(dayISO, "YYYY-MM-DD").format("DD/MM/YYYY");
+            showMeals(dayName, formattedDate, null, false);
+          }
+
+          // Với user có meals_per_day = 2
+          function toggleFullDay(dayName, day) {
+            const alreadySelected = cart.find(item => item.day === day);
+            if (alreadySelected) {
+              cart = cart.filter(item => item.day !== day);
+            } else {
+              const dayMeals = menuByDay[dayName];
+              if (!dayMeals) return;
+
+              const meals = Object.entries(dayMeals).map(([slot, meal]) => ({
+                slot: parseInt(slot),
+                name: meal.meal_name,
+                meal_id: meal.id, // THÊM ID ở đây
+                image: meal.meal_image,
+                description: meal.meal_description
+              }));
+              cart.push({ day, meals });
+            }
+
+            showMeals(dayName, day, null, false);
+          }
+
+          function updateSummary() {
+            const totalElement = document.getElementById('total-meals-week');
+            const dailyElement = document.getElementById('total-meals-day');
+            const infoElement = document.querySelector('.filter-info p');
+
+            if (!totalElement || !dailyElement || !infoElement) return;
+
+            let selectedDays = [];
+
+            if (mealsPerDay === 1) {
+              selectedDays = [...new Set(cart.map(item => item.day))];
+            } else {
+              // Nếu mỗi item là { day }, map thẳng ra mảng ngày
+              selectedDays = [...new Set(cart.map(item => item.day))];
+            }
+
+            // Render thông tin ngày đã chọn
+            const dateText = selectedDays.map(date => {
+              const index = dayDates.indexOf(date);
+              if (index === -1) return null;
+              return `Thứ ${index + 2} (${date})`;
+            }).filter(Boolean).join(", ");
+
+            infoElement.innerHTML = `Các ngày đã được đặt: <strong>${dateText || "Chưa có"}</strong>`;
+            dailyElement.textContent = mealsPerDay;
+            totalElement.textContent = cart.reduce((sum, item) => sum + (item.meals ? item.meals.length : 1), 0);
+          }
+
+          document.addEventListener('DOMContentLoaded', () => {
+              const dayName = '<%= firstAvailable.name %>';
+              const dateStr = '<%= firstAvailable.date.format("YYYY-MM-DD") %>';
+              showMeals(dayName, dateStr);
+              const activeLink = document.querySelectorAll('.widget-nav ul li a')[0];
+              if (activeLink) activeLink.classList.add('active');
+            
+          });
+
+          //Post đặt món
+          document.querySelector('.default-btn')?.addEventListener('click', async (e) => {
+            e.preventDefault();
+
+            if (!cart || cart.length === 0) {
+              alert("Bạn chưa chọn món nào!");
+              return;
+            }
+
+            const cartToSend = cart.map(item => {
+              if (item.meals) {
+                return {
+                  day: item.day,
+                  meals: item.meals.map(m => ({
+                    slot: m.slot,
+                    meal_id: m.meal_id
+                  }))
+                };
+              } else {
+                return {
+                  day: item.day,
+                  slot: item.slot,
+                  meal_id: item.meal_id
+                };
+              }
+            });
+              console.log("Cart to send:", cartToSend);
+            try {
+              const res = await fetch("/user/datmon", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                  user_package_id: userPackageId,
+                  cart: cartToSend
+                })
+              });
+
+              const result = await res.json();
+              if (res.ok) {
+                alert(result.message || "Đặt món thành công!");
+                location.reload();
+              } else {
+                alert(result.message || "Có lỗi xảy ra khi đặt món.");
+              }
+            } catch (err) {
+              console.error("Lỗi gửi cart:", err);
+              alert("Không thể kết nối máy chủ.");
+            }
+          });
+        </script>
+
+        <script src="/js/jquery-3.7.1.min.js" type="text/javascript"></script>
+        <script src="/js/bootstrap.bundle.min.js" type="text/javascript"></script>
+        <script src="/js/aos.js" type="text/javascript"></script>
+        <script src="/js/owl.carousel.min.js" type="text/javascript"></script>
+        <script src="/js/jquery.fancybox.min.js" type="text/javascript"></script>
+        <script src="/js/jquery.waypoints.min.js" type="text/javascript"></script>
+        <script src="/js/jquery.counterup.min.js" type="text/javascript"></script>
+        <script src="/js/jquery.scrollUp.min.js" type="text/javascript"></script>
+        <script src="/js/jquery.nice-select.min.js" type="text/javascript"></script>
+        <script src="/js/nouislider.min.js" type="text/javascript"></script>
+        <script src="/js/main.js" type="text/javascript"></script>
+    </body>
+</html>
