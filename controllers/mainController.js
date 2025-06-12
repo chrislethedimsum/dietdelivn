@@ -51,7 +51,7 @@ exports.postBaoGia = async (req, res, next) => {
 };
 
 exports.getBaoMatThongTin = (req, res, next) => {
-  res.render("main/baomathongtin", {
+  res.render("main/baomatthongtin", {
     pageTitle: "Chính sách bảo mật thông tin",
     isAuthenticated: req.session.isLoggedIn,
   });

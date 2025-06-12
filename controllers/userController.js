@@ -58,8 +58,133 @@ exports.getAccountPage = async (req, res, next) => {
             req.session.user.id
         );
         const user_package = user_package_data[0];
-        const [meal_package_data] = await mealPackage.findById(user_package.package_id);
-        const meal_package = meal_package_data[0];
+        let meal_package = null;
+        let structuredWeek = [];
+
+        if (user_package) {
+            const [meal_package_data] = await mealPackage.findById(user_package.package_id);
+            meal_package = meal_package_data[0];
+            console.log("Meal package:", meal_package);
+            // Tính ngày bắt đầu tuần hiện tại (thứ 2)
+            const weekStart = moment().startOf("isoWeek");
+            const weekStartStr = weekStart.format("YYYY-MM-DD");
+
+            // Lấy các đơn đặt món trong tuần hiện tại
+            const [userOrdersInWeek] = await userMealSelection.findByUserIdAndWeek(
+                req.session.user.id,
+                weekStartStr
+            );
+
+            // Build structuredWeek từ thứ 2 đến thứ 7
+
+            for (let i = 0; i < 6; i++) {
+                const day = moment(weekStart).add(i, "days");
+                const dateStr = day.format("YYYY-MM-DD");
+                const order = userOrdersInWeek.find((o) => moment(o.meal_date).format("YYYY-MM-DD") === dateStr);
+
+                const isBeforeStart = day.isBefore(moment(user_package.start_date), "day");
+                const isAfterEnd = day.isAfter(moment(user_package.end_date), "day");
+
+                let meals = [];
+                    if (order) {
+                        if (["1", "both"].includes(order.selected_slot) && order.meal_slot1_name) {
+                        meals.push(order.meal_slot1_name);
+                    }
+                    if (["2", "both"].includes(order.selected_slot) && order.meal_slot2_name) {
+                        meals.push(order.meal_slot2_name);
+                    }
+                }
+
+                const now = moment();
+                
+                const isWeekendBatchTime =
+                    (now.isoWeekday() === 6 && now.hour() >= 12 && now.minute() >= 30) || // Thứ 7 sau 12:30
+                    (now.isoWeekday() === 7 && now.hour() < 12);       
+
+
+                const canEdit =
+                    !isBeforeStart &&
+                    !isAfterEnd &&
+                    (
+                        (
+                        day.isAfter(now, "day") &&
+                        now.isBefore(moment(day).subtract(1, "day").set({ hour: 12, minute: 0 }))
+                        )
+                        || isWeekendBatchTime
+                );
+
+                structuredWeek.push({
+                    date: dateStr,
+                    weekday: day.format("dddd"),
+                    meals: meals.length ? meals : null,
+                    status: order ? order.status : null,
+                    canEdit,
+                    outsidePackageStart: isBeforeStart,
+                    outsidePackageEnd: isAfterEnd,
+                });
+            }
+        } else {
+            const weekStart = moment().startOf("isoWeek");
+            structuredWeek = Array.from({ length: 6 }, (_, i) => {
+                const day = moment(weekStart).add(i, "days");
+                return {
+                date: day.format("YYYY-MM-DD"),
+                weekday: day.format("dddd"),
+                meals: null,
+                status: null,
+                canEdit: false,
+                outsidePackageStart: true,
+                outsidePackageEnd: false,
+                };
+            });
+        }
+        
+
+        const enrichedWeeks = await Promise.all(weeks_data.map(async (week) => {
+            const [days] = await userMealSelection.findByUserIdAndWeek(
+                req.session.user.id,
+                moment(week.week_start_date).format("YYYY-MM-DD")
+            );
+
+            const orderedDays = days.length;
+
+            const slotToCount = (slot) => {
+                if (slot === "both") return 2;
+                if (slot === "1" || slot === "2") return 1;
+                return 0;
+            };
+
+            const delivered_meals = days
+                .filter(d => d.status === "delivered")
+                .reduce((sum, d) => sum + slotToCount(d.selected_slot), 0);
+
+            const total_valid_meals = days
+                .filter(d => d.status !== "canceled")
+                .reduce((sum, d) => sum + slotToCount(d.selected_slot), 0);
+
+            const deliveredMealNames = [];
+
+            days
+                .filter(d => d.status === "delivered")
+                .forEach(d => {
+                if (d.meal_slot1_name) deliveredMealNames.push(d.meal_slot1_name);
+                if (d.meal_slot2_name) deliveredMealNames.push(d.meal_slot2_name);
+                });
+
+            const orderedWeekdays = days
+                .filter(d => d.status !== "canceled")
+                .map(d => moment(d.meal_date).locale('vi').format("dddd"));
+
+            return {
+                ...week,
+                delivered_meals,
+                ordered_days: orderedDays,
+                total_valid_meals,
+                meal_names: [...new Set(deliveredMealNames)], // loại trùng
+                ordered_weekdays: [...new Set(orderedWeekdays)],
+            };
+        }));
+
         res.render("user/account", {
             pageTitle: "Tài khoản",
             isAuthenticated: req.session.isLoggedIn,
@@ -69,6 +194,9 @@ exports.getAccountPage = async (req, res, next) => {
             moment,
             user_package,
             meal_package,
+            structuredWeek,
+            capitaliseVN,
+            weeks_data: enrichedWeeks,
         });
     } catch (err) {
         console.error(err);
@@ -149,7 +277,7 @@ exports.getDatMon = async (req, res, next) => {
 
     try {
         // Xác định thời gian hiện tại
-        const now = moment().tz("Asia/Ho_Chi_Minh");  // TESTING NHỚ XÓA
+        const now = moment().tz("Asia/Ho_Chi_Minh").subtract(3, 'days');
         // Lấy gói ăn đang active của user
         const [userPackages] = await userPackage.findActiveByUserId(
             req.session.user.id
@@ -199,6 +327,8 @@ exports.getDatMon = async (req, res, next) => {
             req.session.user.id,
             weekStartStr
         );
+
+
         // Group items theo ngày và slot
         const days = [
             "Monday",
@@ -226,8 +356,11 @@ exports.getDatMon = async (req, res, next) => {
         const validMealDates = dayDates.filter(dateStr => {
             const day = moment(dateStr, "YYYY-MM-DD");
             const isAfterStart = day.isSameOrAfter(moment(user_package.start_date), 'day');
-            const isAfterToday = day.isSameOrAfter(now, 'day');
-            return isAfterStart && isAfterToday;
+            // Nếu ngày ăn là hôm nay → phải sau 12h trưa mới khóa
+            if (day.isSame(now, 'day')) {
+                return now.hour() < 12; // còn trước 12h trưa thì còn đặt được
+            }
+            return isAfterStart && day.isAfter(now, 'day'); // chỉ ngày tương lai mới hợp lệ
         });
 
         // Tạo mảng cart ban đầu từ dữ liệu đã đặt trong DB
@@ -249,7 +382,29 @@ exports.getDatMon = async (req, res, next) => {
                 meal_id: order.selected_slot === "1" ? order.selected_meal_slot1 : order.selected_meal_slot2
                 };
             }
-            });
+        });
+        const nowMoment = moment.tz(now.format(), "Asia/Ho_Chi_Minh");
+        const availableDays = days.map((dayName, index) => {
+            const date = moment(weekStartStr).add(index, 'days'); // ngày thực tế
+            const diffDays = date.diff(nowMoment.clone().startOf("day"), 'days');
+            const isBeforeStart = date.isBefore(start_date_moment, 'day');
+
+            let isValid = false;
+
+            if (diffDays > 1) {
+                isValid = true; // các ngày xa hơn ngày mai luôn hợp lệ
+            } else if (diffDays === 1) {
+                // ngày mai → hợp lệ nếu hiện tại < 12h
+                isValid = nowMoment.hour() < 12;
+            }
+
+            return {
+                name: dayName,
+                date: date.format("YYYY-MM-DD"),
+                formatted: date.format("DD/MM/YYYY"),
+                isAvailable: !isBeforeStart && isValid,
+            };
+        }).filter(d => d.isAvailable);
 
         // Truyền thêm biến để EJS disable checkbox nếu quá hạn từng ngày
         res.render("user/datmon", {
@@ -270,6 +425,7 @@ exports.getDatMon = async (req, res, next) => {
             validMealDates,
             start_date_moment,
             cartFromDb,
+            availableDays,
         });
     } catch (err) {
         console.error(err);
@@ -296,11 +452,14 @@ exports.postDatMon = async (req, res) => {
       const meal_date = item.day;
       const [result] = await userMealSelection.findByUserIdAndDate(user_id, meal_date);
       const existing = result[0] || null;
+        console.log("Món ăn đã chọn:", item);
+        console.log("Món ăn đã đặt:", existing);
 
       if (item.meals) {
+        console.log("Đặt món cho cả 2 slot");
         const slot1 = item.meals.find(m => m.slot === 1)?.meal_id || null;
         const slot2 = item.meals.find(m => m.slot === 2)?.meal_id || null;
-
+        console.log("Slot 1:", slot1, "Slot 2:", slot2);
         const incoming = {
           selected_slot: "both",
           selected_meal_slot1: slot1,
@@ -318,7 +477,7 @@ exports.postDatMon = async (req, res) => {
 
             await mealChangeLog.create({
               user_meal_selection_id: existing.id,
-              change_type: "update"
+              change_type: "reselect"
             });
           }
         } else {
@@ -335,6 +494,7 @@ exports.postDatMon = async (req, res) => {
           });
         }
       } else {
+        console.log("Đặt món cho 1 slot");
         const slot = item.slot;
         const meal_id = item.meal_id;
         const slot1 = slot === 1 ? meal_id : null;

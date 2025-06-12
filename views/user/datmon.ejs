@@ -1,25 +1,5 @@
 <!-- prettier-ignore -->
-<% const orderMap={};
-  if (userOrdersInWeek) { 
-    userOrdersInWeek.forEach(o=> { 
-      const mealDateFormatted = moment(o.meal_date).format("YYYY-MM-DD"); 
-      orderMap[mealDateFormatted] = o; 
-    }); 
-  } // Tìm ngày còn trong hạn đặt món (từ today -> cuối tuần)
-  const momentNow = moment(now).format("YYYY-MM-DD"); 
-  const startDate = moment(start_date_moment).startOf('day'); 
-  const availableDays = days.map((dayName, index) => {
-    const date = moment(weekStartStr).add(index, 'days');
-    const isAfterStart = date.isSameOrAfter(startDate, 'day'); 
-    const isAfterToday = date.isSameOrAfter(moment(now), 'day'); 
-    return {
-      name: dayName,
-      date,
-      formatted: date.format("DD/MM/YYYY"),
-      isAvailable: isAfterStart && isAfterToday,
-    };
-  }).filter(d => d.isAvailable);
-  const firstAvailable = availableDays[0]; %>
+<% const nowMoment = moment.tz(now.format(), "Asia/Ho_Chi_Minh"); %>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -65,31 +45,33 @@
                                 </div>
                                 <div class="widget-nav mt-3">
                                     <ul>
-                                        <% days.forEach((dayName, index)=> { 
-                                          const meals = menuByDay[dayName]; 
-                                          if (!meals) return; 
-                                          const actualDate = moment(weekStartStr).add(index, 'days'); 
-                                          const formattedDate = actualDate.format("DD/MM/YYYY"); 
-                                          const isPast = actualDate.isBefore(moment(now), 'day');
-                                          const isBeforeStart = actualDate.isBefore(start_date_moment, 'day');
-                                          const isDisabled = isPast || isBeforeStart; %>
+                                      <% days.forEach((dayName, index) => { 
+                                        const meals = menuByDay[dayName]; 
+                                        if (!meals) return;
+
+                                        const actualDate = moment(weekStartStr).add(index, 'days');
+                                        const formattedDate = actualDate.format("DD/MM/YYYY");
+                                        const actualDateStr = actualDate.format("YYYY-MM-DD");
+
+                                        const isAvailable = availableDays.find(d => d.date === actualDateStr);
+                                      %>
                                         <li>
-                                            <% if (!isDisabled) { %>
-                                            <a
-                                                href="javascript:void(0);"
-                                                onclick="showMeals('<%= dayName %>', '<%= formattedDate %>', this)"
-                                            >
-                                                <i class="fas fa-angle-right"></i>
-                                                Thứ <%= index + 2 %> (<%= formattedDate %>)
-                                            </a>
-                                            <% } else { %>
-                                            <span class="text-muted">
-                                                <i class="fas fa-angle-right"></i>
-                                                Thứ <%= index + 2 %> (<%= formattedDate %>)
-                                            </span>
-                                            <% } %>
+                                          <% if (isAvailable) { %>
+                                          <a
+                                            href="javascript:void(0);"
+                                            onclick="showMeals('<%= dayName %>', '<%= formattedDate %>', this)"
+                                          >
+                                            <i class="fas fa-angle-right"></i>
+                                            Thứ <%= index + 2 %> (<%= formattedDate %>)
+                                          </a>
+                                          <% } else { %>
+                                          <span class="text-muted">
+                                            <i class="fas fa-angle-right"></i>
+                                            Thứ <%= index + 2 %> (<%= formattedDate %>)
+                                          </span>
+                                          <% } %>
                                         </li>
-                                        <% }); %>
+                                      <% }); %>
                                     </ul>
                                 </div>
                             </div>
@@ -110,21 +92,7 @@
                                 </p>
                             </div>
                         </div>
-                        <!-- End Sorting Form -->
-                        <% if (availableDays.length===0) { %>
-                        <div style="background: #fbe0e0; border: 1px solid red; padding: 10px; margin-bottom: 20px">
-                            Tuần này không còn ngày nào trống để đặt món. Hẹn bạn tuần sau nhé!
-                        </div>
-                        <% } else if (userOrdersInWeek && userOrdersInWeek.length> 0) { %>
-                        <div style="background: #e0ffe0; border: 1px solid green; padding: 10px; margin-bottom: 20px">
-                            Bạn đã đặt món cho tuần này. Bạn có thể thay đổi hoặc hủy món cho những ngày còn trong hạn.
-                        </div>
-                        <% } else { %>
-                        <div style="background: #fffbe0; border: 1px solid orange; padding: 10px; margin-bottom: 20px">
-                            Bạn chưa đặt món cho tuần này. Hãy chọn món trước <strong>12:00 trưa Chủ nhật</strong>.
-                        </div>
-                        <% } %> 
-                        <!-- Start Products -->
+
                         <div class="all-products mt-5">
                             <div class="products-wrapper">
                                 <div id="meal-container" class="row"></div>
@@ -154,7 +122,7 @@
           const mealsPerDay = <%= meals_per_day %>;
           const days = <%- JSON.stringify(days) %>;
           const userPackageId = <%= user_package_id %>;
-
+          const availableDays = <%- JSON.stringify(availableDays) %>;
           let cart = <%- JSON.stringify(cartFromDb || []) %>;
           console.log("Cart loaded from DB:", cart);
 
@@ -313,26 +281,34 @@
 
           // Với user có meals_per_day = 2
           function toggleFullDay(dayName, day) {
-            const alreadySelected = cart.find(item => item.day === day);
+            let dayISO = moment(day, "DD/MM/YYYY", true).isValid()
+              ? moment(day, "DD/MM/YYYY").format("YYYY-MM-DD")
+              : moment(day).format("YYYY-MM-DD"); // fallback if already ISO
+
+            const alreadySelected = cart.find(item => item.day === dayISO);
             if (alreadySelected) {
-              cart = cart.filter(item => item.day !== day);
+              cart = cart.filter(item => item.day !== dayISO);
             } else {
               const dayMeals = menuByDay[dayName];
               if (!dayMeals) return;
-
+              console.log("Day meals:", dayMeals);
               const meals = Object.entries(dayMeals).map(([slot, meal]) => ({
                 slot: parseInt(slot),
                 name: meal.meal_name,
-                meal_id: meal.id, // THÊM ID ở đây
+                meal_id: meal.meal_id,
                 image: meal.meal_image,
                 description: meal.meal_description
               }));
-              cart.push({ day, meals });
+
+              cart.push({ day: dayISO, meals }); // ✅ Đúng key là "day"
             }
 
-            showMeals(dayName, day, null, false);
-          }
+            console.table(cart);
 
+            const formattedDate = moment(dayISO, "YYYY-MM-DD").format("DD/MM/YYYY");
+            showMeals(dayName, formattedDate, null, false);
+          }
+          
           function updateSummary() {
             const totalElement = document.getElementById('total-meals-week');
             const dailyElement = document.getElementById('total-meals-day');
@@ -362,12 +338,18 @@
           }
 
           document.addEventListener('DOMContentLoaded', () => {
-              const dayName = '<%= firstAvailable.name %>';
-              const dateStr = '<%= firstAvailable.date.format("YYYY-MM-DD") %>';
-              showMeals(dayName, dateStr);
-              const activeLink = document.querySelectorAll('.widget-nav ul li a')[0];
-              if (activeLink) activeLink.classList.add('active');
-            
+            if (!availableDays || availableDays.length === 0) return;
+            const dayName = availableDays[0].name;
+            const dateStr = availableDays[0].date;
+
+            showMeals(dayName, dateStr);
+
+            const formattedDateStr = moment(dateStr, "YYYY-MM-DD").format("DD/MM/YYYY");
+            document.querySelectorAll('.widget-nav ul li a').forEach(link => {
+              if (link.innerText.includes(formattedDateStr)) {
+                link.classList.add('active');
+              }
+            });
           });
 
           //Post đặt món

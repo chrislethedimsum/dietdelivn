@@ -102,12 +102,18 @@ module.exports = class UserMealSelection {
 
     static findByUserIdAndWeek(user_id, week_start_date) {
         return db.execute(
-            `SELECT ums.*, wm.week_start_date
-         FROM user_meal_selections ums
-         JOIN weekly_menus wm
-           ON ums.meal_date BETWEEN wm.week_start_date AND DATE_ADD(wm.week_start_date, INTERVAL 5 DAY)
-         WHERE ums.user_id = ? AND wm.week_start_date = ?
-         ORDER BY ums.meal_date ASC`,
+            `SELECT 
+                ums.*,
+                wm.week_start_date,
+                m1.name AS meal_slot1_name,
+                m2.name AS meal_slot2_name
+            FROM user_meal_selections ums
+            JOIN weekly_menus wm
+            ON ums.meal_date BETWEEN wm.week_start_date AND DATE_ADD(wm.week_start_date, INTERVAL 5 DAY)
+            LEFT JOIN meals m1 ON ums.selected_meal_slot1 = m1.id
+            LEFT JOIN meals m2 ON ums.selected_meal_slot2 = m2.id
+            WHERE ums.user_id = ? AND wm.week_start_date = ?
+            ORDER BY ums.meal_date ASC`,
             [user_id, week_start_date]
         );
     }

@@ -196,20 +196,19 @@ exports.postGanGoiAn = async (req, res, next) => {
   try {
     // Lấy duration_days từ meal_packages
     const [pkgRows] = await mealPackage.findById(packageId);
-    const duration = pkgRows[0].duration_days;
+    const totalMeals = pkgRows[0].total_meals;
     const endDate = new Date(startDate);
-    endDate.setDate(endDate.getDate() + duration * 2);
+    endDate.setDate(endDate.getDate() + pkgRows[0].duration_days);
 
     await userPackage.create({
       user_id: userId,
       package_id: packageId,
       start_date: startDate,
       end_date: endDate.toISOString().slice(0, 10),
-      remaining_days: duration
+      remaining_meals: totalMeals,
     });
 
     // TODO: Gửi email/thông báo cho user
-
     res.redirect("/admin/users");
   } catch (err) {
     console.error(err);

@@ -434,6 +434,36 @@ background
 /******************
 Buttons
 *******************/
+.very-big-btn {
+  display: inline-block;
+  background: #fe771c;
+  background: linear-gradient(0deg, #ff6d1a 50%, #fd831e 100%);
+  color: #fff;
+  padding: 30px 100px;
+  border-radius: 30px;
+  border: 0;
+  font-weight: 900;
+  font-size: 1.5rem; }
+  .very-big-btn i {
+    color: #fff; }
+  @media (min-width: 768px) and (max-width: 991px) {
+    .very-big-btn {
+      padding: 12px 18px;
+      font-size: .95rem; } }
+  @media (max-width: 768px) {
+    .very-big-btn {
+      padding: 14px 20px;
+      font-size: .95rem; } }
+  @media (max-width: 575px) {
+    .very-big-btn {
+      padding: 10px 20px;
+      font-size: .95rem; } }
+  .very-big-btn:focus {
+    outline: 0; }
+  .very-big-btn:hover {
+    color: #fff;
+    text-decoration: none; }
+
 .default-btn {
   display: inline-block;
   background: #fe771c;
