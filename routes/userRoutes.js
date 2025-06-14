@@ -6,6 +6,7 @@ const path = require('path');
 router.get('/login', userController.getLoginPage);
 router.post('/login', userController.postLoginPage);
 router.get('/account', userController.getAccountPage);
+router.get('/info-edit/:id', userController.getInfoEditPage);
 router.post('/logout', userController.postLogout);
 
 //đặt món ăn

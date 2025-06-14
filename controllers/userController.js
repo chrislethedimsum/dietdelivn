@@ -15,24 +15,6 @@ const mealChangeLog = require("../models/mealchangelogs");
 const db = require("../util/database");
 const { type } = require("os");
 
-function isSameSelection(existing, incoming) {
-  if (!existing) return false;
-
-  if (incoming.selected_slot === "both") {
-    return (
-      existing.selected_slot === "both" &&
-      existing.selected_meal_slot1 == incoming.selected_meal_slot1 &&
-      existing.selected_meal_slot2 == incoming.selected_meal_slot2
-    );
-  }
-
-  return (
-    existing.selected_slot === incoming.selected_slot &&
-    (incoming.selected_slot === "1"
-      ? existing.selected_meal_slot1 == incoming.selected_meal_slot1
-      : existing.selected_meal_slot2 == incoming.selected_meal_slot2)
-  );
-}
 
 exports.getLoginPage = (req, res, next) => {
     if (req.session.isLoggedIn) {
@@ -163,6 +145,9 @@ exports.getAccountPage = async (req, res, next) => {
                 .reduce((sum, d) => sum + slotToCount(d.selected_slot), 0);
 
             const deliveredMealNames = [];
+            const orderedWeekdays = days
+                .filter(d => d.status !== "canceled")
+                .map(d => moment(d.meal_date).locale('vi').format("dddd"));
 
             days
                 .filter(d => d.status === "delivered")
@@ -171,17 +156,13 @@ exports.getAccountPage = async (req, res, next) => {
                 if (d.meal_slot2_name) deliveredMealNames.push(d.meal_slot2_name);
                 });
 
-            const orderedWeekdays = days
-                .filter(d => d.status !== "canceled")
-                .map(d => moment(d.meal_date).locale('vi').format("dddd"));
-
             return {
                 ...week,
                 delivered_meals,
                 ordered_days: orderedDays,
                 total_valid_meals,
-                meal_names: [...new Set(deliveredMealNames)], // loại trùng
-                ordered_weekdays: [...new Set(orderedWeekdays)],
+                meal_names: [...new Set(deliveredMealNames)],
+                ordered_weekdays: [...new Set(orderedWeekdays)], // loại trùng
             };
         }));
 
@@ -201,6 +182,52 @@ exports.getAccountPage = async (req, res, next) => {
     } catch (err) {
         console.error(err);
         res.redirect("/user/account");
+    }
+};
+
+exports.getInfoEditPage = async (req, res, next) => {
+    if (!req.session.isLoggedIn) {
+        return res.redirect("/user/login");
+    }
+    const userId = req.params.userId;
+    try {
+        res.render("user/infoedit", {
+            pageTitle: "Sửa thông tin",
+            isAuthenticated: req.session.isLoggedIn,
+            user: req.session.user,
+        });
+    } catch (err) {
+        console.error(err);
+        return res.redirect("/user/account");
+    }
+}
+
+exports.postInfoEditPage = async (req, res, next) => {
+    if (!req.session.isLoggedIn) {
+        return res.redirect("/user/login");
+    }
+    const userId = req.session.user.id;
+    const { email, phone, address, password } = req.body;
+    try {
+        // Cập nhật thông tin người dùng
+        await User.updateById(userId, {
+            email,
+            phone,
+            address,
+            password,
+        });
+        // Cập nhật thông tin trong session
+        req.session.user.email = email;
+        req.session.user.phone = phone;
+        req.session.user.address = address;
+        req.session.user.password = password;
+        res.redirect("/user/account");
+    } catch (err) {
+        console.error("Lỗi cập nhật thông tin người dùng:", err);
+        res.status(500).json({
+            success: false,
+            message: "Lỗi cập nhật thông tin, vui lòng thử lại sau.",
+        });
     }
 };
 
@@ -277,7 +304,7 @@ exports.getDatMon = async (req, res, next) => {
 
     try {
         // Xác định thời gian hiện tại
-        const now = moment().tz("Asia/Ho_Chi_Minh").subtract(3, 'days');
+        const now = moment().tz("Asia/Ho_Chi_Minh").subtract(2, 'days');
         // Lấy gói ăn đang active của user
         const [userPackages] = await userPackage.findActiveByUserId(
             req.session.user.id
@@ -366,23 +393,31 @@ exports.getDatMon = async (req, res, next) => {
         // Tạo mảng cart ban đầu từ dữ liệu đã đặt trong DB
         const cartFromDb = userOrdersInWeek
             .filter(order => order.status === 'ordered')
-            .map(order => {
-            if (order.selected_slot === "both") {
-                return {
-                day: moment(order.meal_date).format("YYYY-MM-DD"),
-                meals: [
-                    { slot: 1, meal_id: order.selected_meal_slot1 },
-                    { slot: 2, meal_id: order.selected_meal_slot2 }
-                ]
-                };
-            } else {
-                return {
-                day: moment(order.meal_date).format("YYYY-MM-DD"),
-                slot: parseInt(order.selected_slot),
-                meal_id: order.selected_slot === "1" ? order.selected_meal_slot1 : order.selected_meal_slot2
-                };
-            }
-        });
+            .flatMap(order => {
+                const day = moment(order.meal_date).format("YYYY-MM-DD");
+                if (order.selected_slot === "both") {
+                return [
+                    {
+                    day,
+                    slot: 1,
+                    meal_id: order.selected_meal_slot1
+                    },
+                    {
+                    day,
+                    slot: 2,
+                    meal_id: order.selected_meal_slot2
+                    }
+                ];
+                } else {
+                return [{
+                    day,
+                    slot: parseInt(order.selected_slot),
+                    meal_id: order.selected_slot === "1"
+                    ? order.selected_meal_slot1
+                    : order.selected_meal_slot2
+                }];
+            }   
+            });
         const nowMoment = moment.tz(now.format(), "Asia/Ho_Chi_Minh");
         const availableDays = days.map((dayName, index) => {
             const date = moment(weekStartStr).add(index, 'days'); // ngày thực tế
@@ -438,125 +473,100 @@ exports.postDatMon = async (req, res) => {
     const { cart, user_package_id } = req.body;
     const user_id = req.session.user.id;
 
-    const currentWeekStartDate = moment()
-      .tz("Asia/Ho_Chi_Minh")
-      .startOf("isoWeek")
-      .format("YYYY-MM-DD");
+    const currentWeekStartDate = moment().tz("Asia/Ho_Chi_Minh").startOf("isoWeek").format("YYYY-MM-DD");
+    const [userOrdersInWeek] = await userMealSelection.findByUserIdAndWeek(user_id, currentWeekStartDate);
 
-    const [userOrdersInWeek] = await userMealSelection.findByUserIdAndWeek(
-      user_id,
-      currentWeekStartDate
-    );
+    const existingMap = {};
+    userOrdersInWeek.forEach(order => {
+      const day = moment(order.meal_date).format("YYYY-MM-DD");
+      existingMap[day] = order;
+    });
 
+    // ===== STEP 1: GROUP CART BY DAY =====
+    const groupedCart = {};
     for (const item of cart) {
-      const meal_date = item.day;
-      const [result] = await userMealSelection.findByUserIdAndDate(user_id, meal_date);
-      const existing = result[0] || null;
-        console.log("Món ăn đã chọn:", item);
-        console.log("Món ăn đã đặt:", existing);
+      const meal_date = moment(item.day).format("YYYY-MM-DD");
+      if (!groupedCart[meal_date]) {
+        groupedCart[meal_date] = { day: meal_date, meals: [] };
+      }
 
       if (item.meals) {
-        console.log("Đặt món cho cả 2 slot");
-        const slot1 = item.meals.find(m => m.slot === 1)?.meal_id || null;
-        const slot2 = item.meals.find(m => m.slot === 2)?.meal_id || null;
-        console.log("Slot 1:", slot1, "Slot 2:", slot2);
-        const incoming = {
-          selected_slot: "both",
-          selected_meal_slot1: slot1,
-          selected_meal_slot2: slot2
-        };
-
-        if (existing) {
-          if (!isSameSelection(existing, incoming)) {
-            await userMealSelection.updateByUserIdAndDate({
-              user_id,
-              meal_date,
-              ...incoming,
-              status: "ordered"
-            });
-
-            await mealChangeLog.create({
-              user_meal_selection_id: existing.id,
-              change_type: "reselect"
-            });
-          }
-        } else {
-          const [insertResult] = await userMealSelection.create({
-            user_id,
-            user_package_id,
-            meal_date,
-            ...incoming
-          });
-
-          await mealChangeLog.create({
-            user_meal_selection_id: insertResult.insertId,
-            change_type: "initial"
-          });
-        }
+        groupedCart[meal_date].meals = item.meals;
       } else {
-        console.log("Đặt món cho 1 slot");
-        const slot = item.slot;
-        const meal_id = item.meal_id;
-        const slot1 = slot === 1 ? meal_id : null;
-        const slot2 = slot === 2 ? meal_id : null;
-
-        const incoming = {
-          selected_slot: slot.toString(),
-          selected_meal_slot1: slot1,
-          selected_meal_slot2: slot2
-        };
-
-        if (existing) {
-          if (!isSameSelection(existing, incoming)) {
-            await userMealSelection.updateByUserIdAndDate({
-              user_id,
-              meal_date,
-              ...incoming,
-              status: "ordered"
-            });
-
-            await mealChangeLog.create({
-              user_meal_selection_id: existing.id,
-              change_type: "reselect"
-            });
-          }
-        } else {
-          const [insertResult] = await userMealSelection.create({
-            user_id,
-            user_package_id,
-            meal_date,
-            ...incoming
-          });
-
-          await mealChangeLog.create({
-            user_meal_selection_id: insertResult.insertId,
-            change_type: "initial"
-          });
-        }
-      }
-    }
-
-    const daysInCart = cart.map(item => item.day);
-
-    for (const existingOrder of userOrdersInWeek) {
-      const orderDate = moment(existingOrder.meal_date).format("YYYY-MM-DD");
-      const isStillSelected = daysInCart.includes(orderDate);
-
-      if (!isStillSelected && existingOrder.status === "ordered") {
-        await userMealSelection.updateStatusCanceledbyId(existingOrder.id);
-        await mealChangeLog.create({
-          user_meal_selection_id: existingOrder.id,
-          change_type: "cancel"
+        groupedCart[meal_date].meals.push({
+          slot: item.slot,
+          meal_id: item.meal_id
         });
       }
     }
 
+    const updatedDays = [];
+
+    // ===== STEP 2: PROCESS EACH DAY =====
+    for (const meal_date in groupedCart) {
+      const item = groupedCart[meal_date];
+      const existing = existingMap[meal_date] || null;
+      const meals = item.meals;
+
+      const slot1 = meals.find(m => m.slot === 1)?.meal_id || null;
+      const slot2 = meals.find(m => m.slot === 2)?.meal_id || null;
+
+      const selected_slot = slot1 && slot2 ? "both" : slot1 ? "1" : slot2 ? "2" : null;
+      if (!selected_slot) continue;
+
+      updatedDays.push(meal_date);
+
+      if (existing) {
+        await userMealSelection.updateByUserIdAndDate({
+          user_id,
+          meal_date,
+          selected_slot,
+          selected_meal_slot1: slot1,
+          selected_meal_slot2: slot2,
+          status: "ordered",
+        });
+
+        await mealChangeLog.create({
+          user_meal_selection_id: existing.id,
+          change_type: "update",
+        });
+      } else {
+        const [insertResult] = await userMealSelection.create({
+          user_id,
+          user_package_id,
+          meal_date,
+          selected_slot,
+          selected_meal_slot1: slot1,
+          selected_meal_slot2: slot2,
+        });
+
+        await mealChangeLog.create({
+          user_meal_selection_id: insertResult.insertId,
+          change_type: "initial",
+        });
+      }
+    }
+
+    // ===== STEP 3: CANCEL DAYS NO LONGER SELECTED =====
+    const updatedSet = new Set(updatedDays);
+    for (const order of userOrdersInWeek) {
+        const day = moment(order.meal_date).format("YYYY-MM-DD");
+        if (!updatedSet.has(day) && order.status === "ordered") {
+            await userMealSelection.updateStatusCanceledbyId(order.id);
+            await mealChangeLog.create({
+            user_meal_selection_id: order.id,
+            change_type: "cancel",
+            });
+        }
+    }
+
     res.status(200).json({ message: "Đặt món thành công!" });
   } catch (err) {
-    console.error(err);
+    console.error("Lỗi postDatMon:", err);
     res.status(500).json({ message: "Đặt món thất bại!" });
   }
 };
+
 
 exports.getOrderHistory = async (req, res, next) => {
     if (!req.session.isLoggedIn) {

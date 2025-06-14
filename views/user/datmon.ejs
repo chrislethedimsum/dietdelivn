@@ -88,7 +88,6 @@
                                 <p>
                                     Tổng bữa đã chọn trong tuần:
                                     <strong id="total-meals-week">0</strong>
-                                    (<span id="total-meals-day"><%= meals_per_day %></span> bữa/ngày)
                                 </p>
                             </div>
                         </div>
@@ -125,11 +124,13 @@
           const availableDays = <%- JSON.stringify(availableDays) %>;
           let cart = <%- JSON.stringify(cartFromDb || []) %>;
           console.log("Cart loaded from DB:", cart);
+          if (!cart) {
+            console.log("Cart is empty, initializing as an empty array.");
+          }
 
           function showMeals(dayName, dateStr, el = null, withFade = true) {
             const container = document.getElementById('meal-container');
             if (!container) return;
-
 
             if (withFade) {
               container.classList.remove('fade-in', 'visible');
@@ -140,7 +141,7 @@
             const dayMeals = menuByDay[dayName];
             if (!dayMeals) return;
 
-            // Active menu highlight
+            // Highlight ngày đang chọn
             document.querySelectorAll('.widget-nav ul li a').forEach(a => a.classList.remove('active'));
             if (el) el.classList.add('active');
 
@@ -188,12 +189,18 @@
                 const meal = dayMeals[slot];
                 if (!meal) return;
 
+                const isSelected = cart.find(item => item.day === dayISO && item.slot == slot);
+                const buttonText = isSelected ? "Xóa" : "Chọn";
+                const buttonClass = isSelected ? "btn-danger" : "btn-success";
+
                 html += `
                   <div class="col-lg-6 col-sm-6">
                     <div class="card border-0 product-card custom-round">
                       <div class="card-thumb">
                         <img src="${meal.meal_image}" class="card-img-top" alt="food" />
-                        
+                        <button class="btn btn-sm ${buttonClass}" onclick="toggleMeal('${dayName}', '${dateStr}', ${slot}, '${meal.meal_name}', '${meal.meal_id}')">
+                          <i class="fas fa-${isSelected ? 'times' : 'plus'}"></i> ${buttonText}
+                        </button>
                       </div>
                       <div class="card-body">
                         <h6 class="heading-6">${meal.meal_name}</h6>
@@ -208,22 +215,25 @@
                   </div>`;
               });
 
-              const isSelected = cart.find(item => item.day === dayISO);
-              const buttonText = isSelected ? "Xóa ngày ăn" : "Chọn ngày ăn";
-              const buttonClass = isSelected ? "btn-danger" : "btn-success";
+              // Tính trạng thái "Chọn cả ngày"
+              const slot1Selected = cart.find(item => item.day === dayISO && item.slot == 1);
+              const slot2Selected = cart.find(item => item.day === dayISO && item.slot == 2);
+              const bothSelected = slot1Selected && slot2Selected;
+
+              const bothButtonText = bothSelected ? "Xóa cả ngày" : "Chọn cả ngày";
+              const bothButtonClass = bothSelected ? "btn-danger" : "btn-success";
 
               html += `
-                <div class="col-12 text-center mt-3">
-                  <button class="btn ${buttonClass}" onclick="toggleFullDay('${dayName}', '${dateStr}')">
-                    ${buttonText}
+                <div class="col-12 text-center mt-3 mb-3">
+                  <button class="btn ${bothButtonClass}" onclick="toggleFullDay('${dayName}', '${dateStr}')">
+                    ${bothButtonText}
                   </button>
                 </div>`;
             }
 
-            // Gán nội dung rồi delay để apply hiệu ứng
+            // Gán nội dung rồi delay hiệu ứng
             container.innerHTML = html;
 
-            // Kích hoạt hiệu ứng sau khi DOM đã render
             if (withFade) {
               requestAnimationFrame(() => {
                 container.classList.add('fade-in');
@@ -236,6 +246,7 @@
 
             updateSummary();
           }
+
 
           document.querySelectorAll('.choose-day-btn').forEach(btn => {
               btn.addEventListener('click', () => {
@@ -258,64 +269,80 @@
               });
             });
           
-          // Với user có meals_per_day = 1
           function toggleMeal(dayName, day, slot, name, meal_id) {
-            // Detect định dạng
             let dayISO = moment(day, "DD/MM/YYYY", true).isValid()
               ? moment(day, "DD/MM/YYYY").format("YYYY-MM-DD")
-              : moment(day).format("YYYY-MM-DD"); // fallback if already ISO
+              : moment(day).format("YYYY-MM-DD");
 
-            const existingIndex = cart.findIndex(item => item.day === dayISO && item.slot == slot);
+            if (mealsPerDay === 1) {
+              // Logic cũ giữ nguyên
+              const existingIndex = cart.findIndex(item => item.day === dayISO && item.slot == slot);
 
-            if (existingIndex !== -1) {
-              cart.splice(existingIndex, 1);
+              if (existingIndex !== -1) {
+                cart.splice(existingIndex, 1);
+              } else {
+                cart = cart.filter(item => item.day !== dayISO); // chỉ 1 slot/ngày
+                cart.push({ day: dayISO, slot, name, meal_id });
+              }
             } else {
-              cart = cart.filter(item => item.day !== dayISO); // chỉ 1 slot/ngày
-              cart.push({ day: dayISO, slot, name, meal_id });
+              // Cho phép chọn từng slot độc lập
+              const existingIndex = cart.findIndex(item => item.day === dayISO && item.slot == slot);
+              if (existingIndex !== -1) {
+                cart.splice(existingIndex, 1); // Bỏ chọn slot
+              } else {
+                cart.push({ day: dayISO, slot, name, meal_id });
+              }
             }
 
             console.table(cart);
-
             const formattedDate = moment(dayISO, "YYYY-MM-DD").format("DD/MM/YYYY");
             showMeals(dayName, formattedDate, null, false);
           }
+
 
           // Với user có meals_per_day = 2
           function toggleFullDay(dayName, day) {
-            let dayISO = moment(day, "DD/MM/YYYY", true).isValid()
+            const dayISO = moment(day, "DD/MM/YYYY", true).isValid()
               ? moment(day, "DD/MM/YYYY").format("YYYY-MM-DD")
-              : moment(day).format("YYYY-MM-DD"); // fallback if already ISO
+              : moment(day).format("YYYY-MM-DD");
 
-            const alreadySelected = cart.find(item => item.day === dayISO);
-            if (alreadySelected) {
-              cart = cart.filter(item => item.day !== dayISO);
+            const hasSlot1 = cart.find(item => item.day === dayISO && item.slot === 1);
+            const hasSlot2 = cart.find(item => item.day === dayISO && item.slot === 2);
+
+            if (hasSlot1 && hasSlot2) {
+              // Đã chọn cả ngày → xóa hết
+              cart = cart.filter(item => !(item.day === dayISO && (item.slot === 1 || item.slot === 2)));
             } else {
               const dayMeals = menuByDay[dayName];
               if (!dayMeals) return;
-              console.log("Day meals:", dayMeals);
-              const meals = Object.entries(dayMeals).map(([slot, meal]) => ({
-                slot: parseInt(slot),
-                name: meal.meal_name,
-                meal_id: meal.meal_id,
-                image: meal.meal_image,
-                description: meal.meal_description
-              }));
 
-              cart.push({ day: dayISO, meals }); // ✅ Đúng key là "day"
+              ['1', '2'].forEach(slot => {
+                const meal = dayMeals[slot];
+                if (meal && !cart.find(item => item.day === dayISO && item.slot === parseInt(slot))) {
+                  cart.push({
+                    day: dayISO,
+                    slot: parseInt(slot),
+                    name: meal.meal_name,
+                    meal_id: meal.meal_id,
+                    image: meal.meal_image,
+                    description: meal.meal_description
+                  });
+                }
+              });
             }
 
             console.table(cart);
-
             const formattedDate = moment(dayISO, "YYYY-MM-DD").format("DD/MM/YYYY");
             showMeals(dayName, formattedDate, null, false);
           }
-          
+
+
+          // Toggle chọn ngày ăn cả ngày        
           function updateSummary() {
             const totalElement = document.getElementById('total-meals-week');
-            const dailyElement = document.getElementById('total-meals-day');
             const infoElement = document.querySelector('.filter-info p');
 
-            if (!totalElement || !dailyElement || !infoElement) return;
+            if (!totalElement || !infoElement) return;
 
             let selectedDays = [];
 
@@ -334,7 +361,6 @@
             }).filter(Boolean).join(", ");
 
             infoElement.innerHTML = `Các ngày đã được đặt: <strong>${dateText || "Chưa có"}</strong>`;
-            dailyElement.textContent = mealsPerDay;
             totalElement.textContent = cart.reduce((sum, item) => sum + (item.meals ? item.meals.length : 1), 0);
           }
 
@@ -357,9 +383,18 @@
           document.querySelector('.default-btn')?.addEventListener('click', async (e) => {
             e.preventDefault();
 
-            if (!cart || cart.length === 0) {
-              alert("Bạn chưa chọn món nào!");
-              return;
+            // Cho phép cart rỗng — nghĩa là user muốn hủy tất cả các ngày
+            if (cart.length === 0) {
+              const { isConfirmed } = await Swal.fire({
+                title: "Bạn đang hủy tất cả các ngày ăn trong tuần?",
+                text: "Thao tác này sẽ xóa tất cả các món đã đặt trong tuần này.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Đúng, hủy tất cả",
+                cancelButtonText: "Không",
+              });
+
+              if (!isConfirmed) return;
             }
 
             const cartToSend = cart.map(item => {
@@ -394,10 +429,11 @@
 
               const result = await res.json();
               if (res.ok) {
-                alert(result.message || "Đặt món thành công!");
-                location.reload();
+                Swal.fire("Đặt món thành công, bây giờ cùng quay lại tài khoản để kiểm tra nhé", "success").then(() => {
+                  window.location.href = "/user/account";
+                });
               } else {
-                alert(result.message || "Có lỗi xảy ra khi đặt món.");
+                Swal.fire("Đặt món thất bại! Liên hệ với chúng mình để kiểm tra nhé!", "error");
               }
             } catch (err) {
               console.error("Lỗi gửi cart:", err);
@@ -416,6 +452,7 @@
         <script src="/js/jquery.scrollUp.min.js" type="text/javascript"></script>
         <script src="/js/jquery.nice-select.min.js" type="text/javascript"></script>
         <script src="/js/nouislider.min.js" type="text/javascript"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script src="/js/main.js" type="text/javascript"></script>
     </body>
 </html>

@@ -42,6 +42,13 @@ module.exports = class User {
     return db.execute("SELECT * FROM users WHERE email = ?", [email]);
   }
 
+  static async updateUserInfoById(user_id, email, phone, address, password) {
+    return db.execute(
+      "UPDATE users SET email = ?, phone = ?, address = ?, password = ? WHERE id = ?",
+      [email, phone, address, password, user_id]
+    );
+  }
+
   static fetchAll() {
     return db.execute("SELECT * FROM users");
   }

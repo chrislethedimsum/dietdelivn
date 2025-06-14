@@ -18,7 +18,7 @@
                                     <p class="mb-0 custom-botder-bottom">Cân nặng: <%= user.weight %> kg</p>
                                     <p class="mb-0 custom-botder-bottom">Giới tính: <%= user.gender %></p>
                                     <p class="mb-0 custom-botder-bottom">Mục tiêu: <%= user.goal %></p>
-                                    <a href="#" class="default-btn-alt mt-3"> <i class="fas fa-pencil-alt"></i> Sửa thông tin</a>
+                                    <a href="/user/info-edit/<%= user.id %>" class="default-btn-alt mt-3"> <i class="fas fa-pencil-alt"></i> Sửa thông tin</a>
                                 </div>
                             </div>
                         </div>
@@ -67,11 +67,7 @@
                             </div>
                             <div class="widget-nav mt-3">
                                 <ul>
-                                    <li><a href="#"><i class="fas fa-angle-right"></i>Past Order</a></li>
-                                    <li><a href="#"><i class="fas fa-angle-right"></i>Track Order</a></li>
-                                    <li><a href="#"><i class="fas fa-angle-right"></i>Offers</a></li>
-                                    <li><a href="#"><i class="fas fa-angle-right"></i>Payment</a></li>
-                                    <li><a href="#"><i class="fas fa-angle-right"></i>Address</a></li>
+                                    <li><a href="#"><i class="fas fa-angle-right"></i>Hóa đơn</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -150,24 +146,13 @@
                                     </h5>
                                     <div class="order-info mt-2">
                                     <p>
-                                        <i class="fas fa-calendar-check text-success"></i>
-                                        Đã đặt: <%= week.ordered_days || 0 %> / 6 ngày
-                                    
-
-                                    <% if (week.ordered_days === 6) { %>
-                                        (<i class="fas fa-check-circle text-success"></i> Đã đặt đầy đủ)
-                                    <% } else { %>
-                                        (<i class="fas fa-exclamation-circle text-warning"></i> Chưa đặt đủ)
-                                    <% } %>
-                                    </p>
-                                    <p>
                                         <i class="fas fa-drumstick-bite text-primary"></i>
-                                        Đã dùng: <strong><%= week.delivered_meals %> / <%= week.total_valid_meals %></strong> bữa
+                                        Đã giao: <strong><%= week.delivered_meals %> / <%= week.total_valid_meals %></strong> bữa
                                     </p>
                                     <% if (week.meal_names && week.meal_names.length > 0) { %>
                                         <p>
                                             <i class="fas fa-concierge-bell text-info"></i>
-                                            Các món đã dùng: 
+                                            Các món đã giao: 
                                             <%= week.meal_names.join(", ") %>
                                         </p>
                                     <% } %>

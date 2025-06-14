@@ -1,0 +1,47 @@
+<%- include('../includes/header.ejs') %>
+
+    <!-- Start Product Details -->
+    <div class="product-details section-ptb">
+        <div class="container">
+            <div class="table-responsive overflow-hidden custom-round custom-border mb-3">
+                <table class="table table-bordered" style="margin-bottom: 0;">
+                    <tbody>
+                        <tr>
+                            <td>Tên</td>
+                            <td><%= user.name %></td>
+                        </tr>
+                        <tr>
+                            <td>Email</td>
+                            <td><input class="form-control" type="email" id="email" name="email" value="<%= user.email %>"></td>
+                        </tr>
+                        <tr>
+                            <td>Số điện thoại</td>
+                            <td><input class="form-control" type="number" id="phone" name="phone" value="<%= user.phone %>"></td>
+                        </tr>
+                        <tr>
+                            <td>Địa chỉ</td>
+                            <td><input class="form-control" type="text" id="address" name="address" value="<%= user.address %>"></td>
+                        </tr>
+                        <tr>
+                            <td>Mật khẩu</td>
+                            <td><input class="form-control" type="text" id="address" name="address" value="<%= user.password %>"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="text-center">
+                <form action="/user/info-edit/<%= user.id %>" method="POST">
+                    <input type="hidden" name="_method" value="PUT">
+                    <button class="default-btn" type="submit">Cập nhật thông tin</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- End Product Details -->
+
+    <!-- Start Subscribe Area -->
+    <div class="subscribe-area section-ptb-2" style="background-image: url(/images/action_bg.jpg);">
+    </div>
+    <!-- End Subscribe Area -->
+
+<%- include('../includes/footer.ejs') %>
