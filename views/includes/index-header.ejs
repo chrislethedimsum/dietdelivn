@@ -69,6 +69,9 @@
                                 <a class="nav-link" href="faqs">Câu hỏi thường gặp</a>
                             </li>
                             <% if (isAuthenticated) { %>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/user/account">Tài khoản</a>
+                            </li>
                             <li class="nav-item login-item">
                                 <form action="/user/logout" method="post"><a class="nav-link"><i class="far fa-user"></i>
                                     <button style="all: unset;">Đăng xuất</button></a>

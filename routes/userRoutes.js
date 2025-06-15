@@ -7,6 +7,7 @@ router.get('/login', userController.getLoginPage);
 router.post('/login', userController.postLoginPage);
 router.get('/account', userController.getAccountPage);
 router.get('/info-edit/:id', userController.getInfoEditPage);
+router.post('/info-edit/:id', userController.postInfoEditPage);
 router.post('/logout', userController.postLogout);
 
 //đặt món ăn

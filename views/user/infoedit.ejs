@@ -1,9 +1,10 @@
 <%- include('../includes/header.ejs') %>
-
+<% console.log(user.id) %>
     <!-- Start Product Details -->
     <div class="product-details section-ptb">
         <div class="container">
             <div class="table-responsive overflow-hidden custom-round custom-border mb-3">
+                <form action="/user/info-edit/<%= user.id %>" method="POST">
                 <table class="table table-bordered" style="margin-bottom: 0;">
                     <tbody>
                         <tr>
@@ -24,17 +25,15 @@
                         </tr>
                         <tr>
                             <td>Mật khẩu</td>
-                            <td><input class="form-control" type="text" id="address" name="address" value="<%= user.password %>"></td>
+                            <td><input class="form-control" type="password" id="password" name="password" value="<%= user.password %>"></td>
                         </tr>
                     </tbody>
                 </table>
             </div>
             <div class="text-center">
-                <form action="/user/info-edit/<%= user.id %>" method="POST">
-                    <input type="hidden" name="_method" value="PUT">
                     <button class="default-btn" type="submit">Cập nhật thông tin</button>
-                </form>
             </div>
+            </form>
         </div>
     </div>
     <!-- End Product Details -->
@@ -43,5 +42,56 @@
     <div class="subscribe-area section-ptb-2" style="background-image: url(/images/action_bg.jpg);">
     </div>
     <!-- End Subscribe Area -->
+    <script>
+        document.querySelector('.default-btn')?.addEventListener('click', async (e) => {
+            e.preventDefault();
 
+            const email = document.getElementById("email").value;
+            const phone = document.getElementById("phone").value;
+            const address = document.getElementById("address").value;
+            const password = document.getElementById("password").value;
+            if (!email || !phone || !address || !password) {
+                Swal.fire("Error", "Vui lòng điền đầy đủ thông tin");
+                return;
+            }
+
+            const { isConfirmed } = await Swal.fire({
+                title: "Bạn có chắc chắn muốn cập nhật thông tin không?",
+                text: "Thông tin sẽ được cập nhật ngay lập tức.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Cập nhật",
+                cancelButtonText: "Hủy",
+              });
+
+            if (!isConfirmed) return;
+
+            try {
+              const res = await fetch("/user/info-edit/<%= user.id %>", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    email: email,
+                    phone: phone,
+                    address: address,
+                    password: password
+                })
+              });
+
+              const result = await res.json();
+              if (result.success) {
+                Swal.fire("Cập nhật thông tin thành công", "success").then(() => {
+                  window.location.href = "/user/account";
+                });
+              } else {
+                Swal.fire("Cập nhật thông tin bị lỗi, liên hệ với chúng mình nhé!", "error");
+              }
+            } catch (err) {
+              console.error("Lỗi gửi cart:", err);
+              alert("Không thể kết nối máy chủ.");
+            }
+        });
+    </script>
 <%- include('../includes/footer.ejs') %>

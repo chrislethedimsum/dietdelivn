@@ -206,22 +206,24 @@ exports.postInfoEditPage = async (req, res, next) => {
     if (!req.session.isLoggedIn) {
         return res.redirect("/user/login");
     }
-    const userId = req.session.user.id;
+    const { userId } = req.params;
     const { email, phone, address, password } = req.body;
     try {
         // Cập nhật thông tin người dùng
-        await User.updateById(userId, {
+        await User.updateUserInfoById(userId, 
             email,
             phone,
             address,
             password,
-        });
+        );
         // Cập nhật thông tin trong session
         req.session.user.email = email;
         req.session.user.phone = phone;
         req.session.user.address = address;
         req.session.user.password = password;
-        res.redirect("/user/account");
+        
+        return res.json({ success: true });
+        
     } catch (err) {
         console.error("Lỗi cập nhật thông tin người dùng:", err);
         res.status(500).json({
@@ -280,7 +282,6 @@ exports.postLoginPage = async (req, res, next) => {
             });
         }
     } catch (error) {
-        console.error("Server xảy ra lỗi lúc đăng nhập", error);
         return res.status(500).json({
             success: false,
             message: "Lỗi server, liên hệ với admin để sửa",
