@@ -1,5 +1,4 @@
 <%- include('../includes/header.ejs') %>
-<% console.log(user.id) %>
     <!-- Start Product Details -->
     <div class="product-details section-ptb">
         <div class="container">
@@ -27,6 +26,10 @@
                             <td>Mật khẩu</td>
                             <td><input class="form-control" type="password" id="password" name="password" value="<%= user.password %>"></td>
                         </tr>
+                        <tr>
+                            <td>Nhập lại mật khẩu</td>
+                            <td><input class="form-control" type="password" id="repassword" name="repassword" placeholder="Hãy nhập lại mật khẩu khi và chỉ khi thay đổi mật khẩu"></td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -50,6 +53,8 @@
             const phone = document.getElementById("phone").value;
             const address = document.getElementById("address").value;
             const password = document.getElementById("password").value;
+            const repassword = document.getElementById("repassword").value;
+
             if (!email || !phone || !address || !password) {
                 Swal.fire("Error", "Vui lòng điền đầy đủ thông tin");
                 return;
@@ -76,17 +81,18 @@
                     email: email,
                     phone: phone,
                     address: address,
-                    password: password
+                    password: password,
+                    repassword: repassword
                 })
               });
 
               const result = await res.json();
               if (result.success) {
-                Swal.fire("Cập nhật thông tin thành công", "success").then(() => {
+                Swal.fire("Cập nhật thông tin thành công", "Sẽ tự động về trang Tài Khoản").then(() => {
                   window.location.href = "/user/account";
                 });
               } else {
-                Swal.fire("Cập nhật thông tin bị lỗi, liên hệ với chúng mình nhé!", "error");
+                Swal.fire("Cập nhật thông tin bị lỗi!", result.message || "Vui lòng thử lại sau hoặc liên hệ quản trị viên.");
               }
             } catch (err) {
               console.error("Lỗi gửi cart:", err);

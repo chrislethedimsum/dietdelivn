@@ -1,8 +1,8 @@
 const path = require("path");
-
 const express = require("express");
 const session = require("express-session");
 const MySQLStore = require("express-mysql-session")(session);
+require('dotenv').config();
 
 const errorController = require("./controllers/error");
 const mainRoute = require("./routes/mainRoutes");
@@ -44,4 +44,4 @@ app.use("/user", userRoute);
 
 app.use(errorController.get404);
 
-app.listen(2000);
+module.exports = app;

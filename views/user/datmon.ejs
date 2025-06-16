@@ -1,21 +1,5 @@
-<!-- prettier-ignore -->
+<%- include('../includes/header.ejs') %>
 <% const nowMoment = moment.tz(now.format(), "Asia/Ho_Chi_Minh"); %>
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-        <title>Menu - Diet Deli</title>
-        <link rel="icon" type="image/png" href="/images/favicon.png" />
-        <link rel="stylesheet" href="/css/bootstrap.min.css" />
-        <link rel="stylesheet" href="/css/owl.carousel.min.css" />
-        <link rel="stylesheet" href="/css/all.min.css" />
-        <link rel="stylesheet" href="/css/aos.css" />
-        <link rel="stylesheet" href="/css/jquery.fancybox.min.css" />
-        <link rel="stylesheet" href="/css/nouislider.min.css" />
-        <link rel="stylesheet" href="/css/nice-select.css" />
-        <link rel="stylesheet" href="/css/style.css" />
         <style>
             .widget-nav ul li a.active {
                 color: #fe771c;
@@ -57,18 +41,15 @@
                                       %>
                                         <li>
                                           <% if (isAvailable) { %>
-                                          <a
-                                            href="javascript:void(0);"
-                                            onclick="showMeals('<%= dayName %>', '<%= formattedDate %>', this)"
-                                          >
-                                            <i class="fas fa-angle-right"></i>
-                                            Thứ <%= index + 2 %> (<%= formattedDate %>)
-                                          </a>
+                                            <a href="javascript:void(0);" onclick="showMeals('<%= dayName %>', '<%= formattedDate %>', this)">
+                                              <i class="fas fa-angle-right"></i>
+                                              Thứ <%= index + 2 %> (<%= formattedDate %>)
+                                            </a>
                                           <% } else { %>
-                                          <span class="text-muted">
-                                            <i class="fas fa-angle-right"></i>
-                                            Thứ <%= index + 2 %> (<%= formattedDate %>)
-                                          </span>
+                                            <span class="text-muted">
+                                              <i class="fas fa-angle-right"></i>
+                                              Thứ <%= index + 2 %> (<%= formattedDate %>)
+                                            </span>
                                           <% } %>
                                         </li>
                                       <% }); %>
@@ -123,11 +104,8 @@
           const userPackageId = <%= user_package_id %>;
           const availableDays = <%- JSON.stringify(availableDays) %>;
           let cart = <%- JSON.stringify(cartFromDb || []) %>;
-          console.log("Cart loaded from DB:", cart);
-          if (!cart) {
-            console.log("Cart is empty, initializing as an empty array.");
-          }
-
+          const remainingMeals = <%= remaining_meals %>;
+          const originalCartLength = cart.length;
           function showMeals(dayName, dateStr, el = null, withFade = true) {
             const container = document.getElementById('meal-container');
             if (!container) return;
@@ -275,29 +253,34 @@
               : moment(day).format("YYYY-MM-DD");
 
             if (mealsPerDay === 1) {
-              // Logic cũ giữ nguyên
               const existingIndex = cart.findIndex(item => item.day === dayISO && item.slot == slot);
-
               if (existingIndex !== -1) {
                 cart.splice(existingIndex, 1);
               } else {
+                if (cart.length - originalCartLength >= remainingMeals) {
+                  Swal.fire("Bạn đã chọn đủ số bữa trong gói!", `Gói ăn của bạn còn ${remainingMeals} bữa.`, "warning");
+                  return;
+                }
                 cart = cart.filter(item => item.day !== dayISO); // chỉ 1 slot/ngày
                 cart.push({ day: dayISO, slot, name, meal_id });
               }
             } else {
-              // Cho phép chọn từng slot độc lập
               const existingIndex = cart.findIndex(item => item.day === dayISO && item.slot == slot);
               if (existingIndex !== -1) {
-                cart.splice(existingIndex, 1); // Bỏ chọn slot
+                cart.splice(existingIndex, 1);
               } else {
+                if (cart.length - originalCartLength >= remainingMeals) {
+                  Swal.fire("Bạn đã chọn đủ số bữa trong gói!", `Gói ăn của bạn còn ${remainingMeals} bữa.`, "warning");
+                  return;
+                }
                 cart.push({ day: dayISO, slot, name, meal_id });
               }
             }
 
-            console.table(cart);
             const formattedDate = moment(dayISO, "YYYY-MM-DD").format("DD/MM/YYYY");
             showMeals(dayName, formattedDate, null, false);
           }
+
 
 
           // Với user có meals_per_day = 2
@@ -310,28 +293,33 @@
             const hasSlot2 = cart.find(item => item.day === dayISO && item.slot === 2);
 
             if (hasSlot1 && hasSlot2) {
-              // Đã chọn cả ngày → xóa hết
               cart = cart.filter(item => !(item.day === dayISO && (item.slot === 1 || item.slot === 2)));
             } else {
               const dayMeals = menuByDay[dayName];
               if (!dayMeals) return;
 
-              ['1', '2'].forEach(slot => {
+              const newSlots = ['1', '2'].filter(slot => {
+                return dayMeals[slot] && !cart.find(item => item.day === dayISO && item.slot === parseInt(slot));
+              });
+
+              if (cart.length + newSlots.length > remainingMeals) {
+                Swal.fire("Không thể chọn thêm!", `Bạn đã đạt đến giới hạn ${remainingMeals} bữa trong tuần này.`, "warning");
+                return;
+              }
+
+              newSlots.forEach(slot => {
                 const meal = dayMeals[slot];
-                if (meal && !cart.find(item => item.day === dayISO && item.slot === parseInt(slot))) {
-                  cart.push({
-                    day: dayISO,
-                    slot: parseInt(slot),
-                    name: meal.meal_name,
-                    meal_id: meal.meal_id,
-                    image: meal.meal_image,
-                    description: meal.meal_description
-                  });
-                }
+                cart.push({
+                  day: dayISO,
+                  slot: parseInt(slot),
+                  name: meal.meal_name,
+                  meal_id: meal.meal_id,
+                  image: meal.meal_image,
+                  description: meal.meal_description
+                });
               });
             }
 
-            console.table(cart);
             const formattedDate = moment(dayISO, "YYYY-MM-DD").format("DD/MM/YYYY");
             showMeals(dayName, formattedDate, null, false);
           }
@@ -357,7 +345,7 @@
             const dateText = selectedDays.map(date => {
               const index = dayDates.indexOf(date);
               if (index === -1) return null;
-              return `Thứ ${index + 2} (${date})`;
+              return `Thứ ${index + 2}`;
             }).filter(Boolean).join(", ");
 
             infoElement.innerHTML = `Các ngày đã được đặt: <strong>${dateText || "Chưa có"}</strong>`;
@@ -428,7 +416,7 @@
 
               const result = await res.json();
               if (res.ok) {
-                Swal.fire("Đặt món thành công, bây giờ cùng quay lại tài khoản để kiểm tra nhé", "success").then(() => {
+                Swal.fire("Đặt món thành công", "Bây giờ cùng quay lại trang Tài Khoản để kiểm tra nhé").then(() => {
                   window.location.href = "/user/account";
                 });
               } else {
@@ -440,18 +428,4 @@
             }
           });
         </script>
-
-        <script src="/js/jquery-3.7.1.min.js" type="text/javascript"></script>
-        <script src="/js/bootstrap.bundle.min.js" type="text/javascript"></script>
-        <script src="/js/aos.js" type="text/javascript"></script>
-        <script src="/js/owl.carousel.min.js" type="text/javascript"></script>
-        <script src="/js/jquery.fancybox.min.js" type="text/javascript"></script>
-        <script src="/js/jquery.waypoints.min.js" type="text/javascript"></script>
-        <script src="/js/jquery.counterup.min.js" type="text/javascript"></script>
-        <script src="/js/jquery.scrollUp.min.js" type="text/javascript"></script>
-        <script src="/js/jquery.nice-select.min.js" type="text/javascript"></script>
-        <script src="/js/nouislider.min.js" type="text/javascript"></script>
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        <script src="/js/main.js" type="text/javascript"></script>
-    </body>
-</html>
+<%- include('../includes/footer.ejs') %>

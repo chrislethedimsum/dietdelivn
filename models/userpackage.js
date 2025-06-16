@@ -1,6 +1,6 @@
 const db = require("../util/database");
 
-module.exports = class userPackage {
+module.exports = class UserPackage {
     constructor(
         id,
         user_id,
@@ -42,4 +42,19 @@ module.exports = class userPackage {
             [user_id]
         );
     }
+
+    static reduceRemainingMeals(user_id, meals) {
+        return db.execute(
+            "UPDATE user_packages SET remaining_meals = remaining_meals - ? WHERE user_id = ? AND is_active = 1",
+            [meals, user_id]
+        );
+    }
+
+    static increaseRemainingMeals(user_id, meals) {
+        return db.execute(
+            "UPDATE user_packages SET remaining_meals = remaining_meals + ? WHERE user_id = ? AND is_active = 1",
+            [meals, user_id]
+        );
+    }
+    
 };

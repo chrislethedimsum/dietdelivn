@@ -1,25 +1,75 @@
-<h2>Chi tiết tuần <%= week_start_date %></h2>
-<% if (isCurrentWeek) { %>
-  <button id="editBtn">Sửa / Thêm món</button>
-<% } %>
-<% console.log('order hiển thị trên browser',orders) %>
-<table>
-  <thead>
-    <tr>
-      <th>Ngày ăn</th>
-      <th>Món 1</th>
-      <th>Món 2</th>
-      <th>Thời gian chỉnh sửa gần nhất</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% orders.forEach(order => { %>
-      <tr>
-        <td><%= capitaliseVN(moment(order.meal_date).format("dddd DD/MM/YYYY")) %></td>
-        <td><%= order.meal1 ? order.meal1.name : '' %></td>
-        <td><%= order.meal2 ? order.meal2.name : '' %></td>
-        <td><%=  moment.utc(order.changed_at).format("HH:mm:ss DD/MM/YYYY") %></td>
-      </tr>
-    <% }) %>
-  </tbody>
-</table>
+<%- include('../includes/header.ejs') %>
+<div class="container">
+    <div class="table-responsive overflow-hidden custom-round custom-border mt-5 mb-5">
+        <table class="table table-bordered" style="margin-bottom: 0">
+            <thead class="table-light">
+                <tr>
+                    <th>Thứ</th>
+                    <th>Món đã chọn</th>
+                    <th>Trạng thái</th>
+                    <th>Ghi chú</th>
+                    <th>Thay đổi gần nhất</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% for (const day of structuredWeek) { %>
+                <tr>
+                    <td><%= capitaliseVN(day.weekday) %></td>
+                    <td>
+                        <% if (day.meals) { %>
+                        <ul class="mb-0">
+                            <% day.meals.forEach(meal => { %>
+                            <li><i class="fas fa-utensils text-success"></i> <%= meal %></li>
+                            <% }) %>
+                        </ul>
+                        <% } else { %>
+                        <span class="text-muted"><i class="fas fa-times-circle text-danger"></i> Chưa chọn món</span>
+                        <% } %>
+                    </td>
+                    <td>
+                        <% if (day.outsidePackageStart) { %>
+                        <span class="badge bg-info text-dark"><i class="fas fa-hourglass-start"></i> Gói ăn chưa có hiệu lực</span>
+                        <% } else if (day.outsidePackageEnd) { %>
+                        <span class="badge bg-secondary"><i class="fas fa-hourglass-end"></i> Gói ăn đã hết hiệu lực</span>
+                        <% } else if (day.status === "ordered") { %>
+                        <span class="badge bg-warning text-dark"><i class="fas fa-clock"></i> Đã đặt</span>
+                        <% } else if (day.status === "delivered") { %>
+                        <span class="badge bg-success"><i class="fas fa-check-circle"></i> Đã giao</span>
+                        <% } else if (day.status === "canceled") { %>
+                        <span class="badge bg-danger"><i class="fas fa-ban"></i> Đã hủy</span>
+                        <% } else { %>
+                        <span class="badge bg-light text-muted"><i class="fas fa-minus-circle"></i> Không có</span>
+                        <% } %>
+                    </td>
+                    <td>
+                        <% if (day.outsidePackageStart || day.outsidePackageEnd) { %>
+                        <i class="fas fa-lock text-muted"></i> Không áp dụng gói ăn <% } else if (day.canEdit && (day.status === "ordered" ||
+                        day.status === "delivered" || day.status === "canceled")) { %>
+                        <a href="/user/datmon"><i class="fas fa-edit text-primary"></i> Có thể chỉnh sửa món</a>
+                        <% } else if (day.canEdit) { %>
+                        <a href="/user/datmon"><i class="fas fa-plus-circle text-success"></i> Có thể đặt món</a>
+                        <% } else { %>
+                        <i class="fas fa-lock text-muted"></i> Đã khóa chỉnh sửa <% } %>
+                    </td>
+                    <td>
+                        <% if (day.changed_at) { %>
+                            <i class="fas fa-history text-info"></i>
+                            <%= moment(day.changed_at).format("HH:mm - DD/MM/YYYY") %>
+                        <% } else { %>
+                            <span class="text-muted">—</span>
+                        <% } %>
+                    </td>
+                </tr>
+                <% } %>
+            </tbody>
+        </table>
+    </div>
+</div>
+<!-- Start Subscribe Area -->
+<div class="subscribe-area section-ptb-2" style="background-image: url(/images/action_bg.jpg)">
+    <div class="container">
+        <div class="row align-items-center"></div>
+    </div>
+</div>
+<!-- End Subscribe Area -->
+<%- include('../includes/footer.ejs') %>

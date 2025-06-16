@@ -1,0 +1,62 @@
+<%- include('../includes/header.ejs') %>
+
+<section class="login-section section-ptb">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <h3 class="text-center mb-4">Đăng nhập Admin</h3>
+
+        <form id="admin-login-form" method="POST">
+          <div class="form-group mb-3">
+            <label for="email">Email admin</label>
+            <input type="email" id="email" name="email" class="form-control" required placeholder="Nhập email admin">
+          </div>
+
+          <div class="form-group mb-3">
+            <label for="password">Mật khẩu</label>
+            <input type="password" id="password" name="password" class="form-control" required placeholder="Nhập mật khẩu">
+          </div>
+
+          <button type="submit" class="default-btn w-100">Đăng nhập</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+document.getElementById("admin-login-form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value;
+
+  if (!email || !password) {
+    Swal.fire("Lỗi", "Vui lòng nhập đầy đủ thông tin", "warning");
+    return;
+  }
+
+  try {
+    const res = await fetch("/admin/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
+
+    const result = await res.json();
+
+    if (result.success) {
+      Swal.fire("Thành công", result.message, "success").then(() => {
+        window.location.href = "/admin/dashboard";
+      });
+    } else {
+      Swal.fire("Lỗi", result.message, "error");
+    }
+  } catch (err) {
+    console.error("Lỗi gửi yêu cầu:", err);
+    Swal.fire("Lỗi máy chủ", "Không thể kết nối tới hệ thống", "error");
+  }
+});
+</script>
+
+<%- include('../includes/footer.ejs') %>

@@ -1,4 +1,6 @@
 const monAn = require("../models/monan");
+const Admin = require("../models/admin");
+const bcrypt = require("bcryptjs");
 const Giohang = require("../models/giohang");
 const nguoiDung = require("../models/user");
 const mealPackage = require("../models/mealpackage");
@@ -7,6 +9,72 @@ const weeklyMenu = require("../models/weeklymenu");
 const dailyMenuItem = require("../models/dailymenuitem")
 const moment = require("moment");
 require("moment/locale/vi");
+
+exports.getDashboard = async (req,res) => {
+  res.render("admin/dashboard", {
+    pageTitle: "Dashboard",
+    isAuthenticated: req.session.isLoggedIn,
+  });
+}
+
+exports.getLogin = async (req,res) => {
+  if (req.session.isLoggedIn) {
+        return res.redirect("/admin/dashboard");
+    } else {
+        res.render("admin/login", {
+            pageTitle: "Đăng nhập",
+            isAuthenticated: req.session.isLoggedIn,
+        });
+  }
+}
+
+exports.postLogout = async (req,res) => {
+  req.session.destroy((err) => {
+        console.log(err);
+        res.redirect("/");
+    });
+}
+
+exports.postAdminLogin = async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    const [rows] = await Admin.getByEmail(email);
+    if (rows.length === 0) {
+      return res.json({ success: false, message: "Email admin không tồn tại" });
+    }
+
+    const admin = rows[0];
+
+    // So sánh mật khẩu
+    const isMatch = await bcrypt.compare(password, admin.password);
+    if (!isMatch) {
+      return res.json({ success: false, message: "Mật khẩu không đúng" });
+    }
+
+    // Kiểm tra quyền admin
+    if (admin.is_admin !== 1) {
+      return res.json({ success: false, message: "Tài khoản không có quyền admin" });
+    }
+
+    // Đăng nhập thành công
+    req.session.isLoggedIn = true;
+    req.session.isAdmin = true;
+    req.session.admin = {
+      id: admin.id,
+      email: admin.email,
+    };
+
+    return res.json({ success: true, message: "Đăng nhập admin thành công" });
+
+  } catch (err) {
+    console.error("Lỗi đăng nhập admin:", err);
+    return res.status(500).json({
+      success: false,
+      message: "Lỗi máy chủ khi đăng nhập admin",
+    });
+  }
+};
 
 exports.getMonAn = (req, res, next) => {
   monAn

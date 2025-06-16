@@ -4,6 +4,18 @@ const adminController = require('../controllers/adminController');
 const monAn = require('../models/monan');
 const path = require('path');
 
+function isAdmin(req, res, next) {
+  if (req.session.isLoggedIn && req.session.isAdmin) {
+    return next();
+  }
+  return res.redirect("/");
+}
+
+router.get("/dashboard", isAdmin, adminController.getDashboard);
+router.get("/login", adminController.getLogin)
+router.post("/login", adminController.postAdminLogin);
+router.post("/logout", adminController.postLogout);
+
 //xem list các mon
 router.get('/monan', adminController.getMonAn);
 

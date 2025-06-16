@@ -10,10 +10,10 @@ const mealPackage = require("../models/mealpackage");
 const moment = require("moment-timezone");
 moment.tz.setDefault("Asia/Ho_Chi_Minh");
 require("moment/locale/vi");
-const meal = require("../models/monan");
 const mealChangeLog = require("../models/mealchangelogs");
-const db = require("../util/database");
-const { type } = require("os");
+const bcrypt = require("bcryptjs");
+const { sendEmail } = require('../util/email');
+
 
 
 exports.getLoginPage = (req, res, next) => {
@@ -46,7 +46,6 @@ exports.getAccountPage = async (req, res, next) => {
         if (user_package) {
             const [meal_package_data] = await mealPackage.findById(user_package.package_id);
             meal_package = meal_package_data[0];
-            console.log("Meal package:", meal_package);
             // Tính ngày bắt đầu tuần hiện tại (thứ 2)
             const weekStart = moment().startOf("isoWeek");
             const weekStartStr = weekStart.format("YYYY-MM-DD");
@@ -206,27 +205,33 @@ exports.postInfoEditPage = async (req, res, next) => {
     if (!req.session.isLoggedIn) {
         return res.redirect("/user/login");
     }
-    const { userId } = req.params;
-    const { email, phone, address, password } = req.body;
+
+    const userId = req.session.user.id;
+    const { email, phone, address, password, repassword } = req.body;
+
     try {
-        // Cập nhật thông tin người dùng
-        await User.updateUserInfoById(userId, 
-            email,
-            phone,
-            address,
-            password,
-        );
-        // Cập nhật thông tin trong session
-        req.session.user.email = email;
-        req.session.user.phone = phone;
-        req.session.user.address = address;
-        req.session.user.password = password;
-        
-        return res.json({ success: true });
-        
+      let hashedPassword = req.session.user.password;
+      if (password && password !== req.session.user.password) {
+          if (password !== repassword) {
+              return res.status(400).json({
+                  success: false,
+                  message: "Mật khẩu và xác nhận mật khẩu không khớp.",
+              });
+          }
+          hashedPassword = await bcrypt.hash(password, 10);
+      }
+
+      await User.updateUserInfoById(userId, email, phone, address, hashedPassword);
+
+      req.session.user.email = email;
+      req.session.user.phone = phone;
+      req.session.user.address = address;
+      req.session.user.password = hashedPassword;
+
+      return res.json({ success: true });
     } catch (err) {
         console.error("Lỗi cập nhật thông tin người dùng:", err);
-        res.status(500).json({
+        return res.status(500).json({
             success: false,
             message: "Lỗi cập nhật thông tin, vui lòng thử lại sau.",
         });
@@ -234,10 +239,11 @@ exports.postInfoEditPage = async (req, res, next) => {
 };
 
 exports.postLoginPage = async (req, res, next) => {
-    const { email, password, token } = req.body;
+    const { email, password, token } = req.body; // `email` có thể là email hoặc phone
     const secret = "ES_26ac6b49ca2248bdab0cd14baa743aea";
+
     try {
-        // Xác minh hCaptcha
+        // ✅ Xác minh hCaptcha
         const verifyURL = "https://hcaptcha.com/siteverify";
         const response = await axios.post(
             verifyURL,
@@ -248,40 +254,46 @@ exports.postLoginPage = async (req, res, next) => {
                 },
             }
         );
+
         const data = response.data;
         if (!data.success) {
             return res.json({
                 success: false,
                 message: "Xác minh captcha thất bại",
             });
-        } else {
-            const [rows, fieldData] = await User.getByEmail(email);
+        }
 
-            if (rows.length === 0) {
-                return res.json({
-                    success: false,
-                    message: "Email không tồn tại",
-                });
-            }
-
-            const user = rows[0];
-
-            if (user.password !== password) {
-                return res.json({
-                    success: false,
-                    message: "Mật khẩu không đúng",
-                });
-            }
-
-            req.session.isLoggedIn = true;
-            req.session.user = user;
-
+        // ✅ Tìm user theo email **hoặc** phone
+        const [rows] = await User.getByEmailOrPhone(email); // ← cập nhật DB layer
+        if (rows.length === 0) {
             return res.json({
-                success: true,
-                message: "Đăng nhập thành công",
+                success: false,
+                message: "Email hoặc số điện thoại không tồn tại",
             });
         }
+
+        const user = rows[0];
+
+        // ✅ So sánh mật khẩu đã hash
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            return res.json({
+                success: false,
+                message: "Mật khẩu không đúng",
+            });
+        }
+
+        // ✅ Đăng nhập thành công
+        req.session.isLoggedIn = true;
+        req.session.user = user;
+
+        return res.json({
+            success: true,
+            message: "Đăng nhập thành công",
+        });
+
     } catch (error) {
+        console.error("Lỗi đăng nhập:", error);
         return res.status(500).json({
             success: false,
             message: "Lỗi server, liên hệ với admin để sửa",
@@ -296,183 +308,166 @@ exports.postLogout = (req, res, next) => {
     });
 };
 exports.getDatMon = async (req, res, next) => {
-    if (!req.session.isLoggedIn) {
-        return res.render("user/login", {
-            pageTitle: "Đăng nhập",
-            isAuthenticated: false,
-        });
+  if (!req.session.isLoggedIn) {
+    return res.render("user/login", {
+      pageTitle: "Đăng nhập",
+      isAuthenticated: false,
+    });
+  }
+
+  try {
+    const now = moment().tz("Asia/Ho_Chi_Minh");
+    const [userPackages] = await userPackage.findActiveByUserId(req.session.user.id);
+    const user_package = userPackages[0];
+
+    const [menus] = await weeklyMenu.fetchAll();
+    const menusSorted = menus.sort((a, b) =>
+      new Date(a.week_start_date) - new Date(b.week_start_date)
+    );
+
+    // === CHỌN MENU PHÙ HỢP DỰA TRÊN THỨ 7 12:30 ===
+    let selectedMenu = null;
+    for (let i = 0; i < menusSorted.length; i++) {
+      const candidate = menusSorted[i];
+      const candidateStart = moment(candidate.week_start_date);
+      const switchTime = candidateStart.clone().add(5, 'days').hour(12).minute(30); // Thứ 7 12:30
+
+      if (now.isBefore(switchTime)) {
+        selectedMenu = candidate;
+        break;
+      }
     }
 
-    try {
-        // Xác định thời gian hiện tại
-        const now = moment().tz("Asia/Ho_Chi_Minh").subtract(2, 'days');
-        // Lấy gói ăn đang active của user
-        const [userPackages] = await userPackage.findActiveByUserId(
-            req.session.user.id
-        );
-        const user_package = userPackages[0];
-        //Lấy tất cả menu theo tuần
-        const [menus] = await weeklyMenu.fetchAll();
-        let menu = null;
-        // Lọc menu hợp lệ gần nhất
-        for (const currentMenu of menus.sort(
-            (a, b) => new Date(a.week_start_date) - new Date(b.week_start_date)
-        )) {
-            const weekStart = moment(currentMenu.week_start_date);
+    if (!selectedMenu) {
+      selectedMenu = menusSorted[menusSorted.length - 1]; // fallback menu cuối cùng
+    }
 
-            if (now.isSameOrAfter(weekStart, "day")) {
-                menu = currentMenu; // cập nhật menu hợp lệ gần nhất
-            } else {
-                break; // các tuần còn lại nằm trong tương lai, bỏ qua
-            }
+    const menu = selectedMenu;
+    const weekStart = moment(menu.week_start_date);
+    const weekStartStr = weekStart.format("YYYY-MM-DD");
+
+    const [items] = await dailyMenuItem.findByMenuId(menu.id);
+    const user_package_id = user_package.id;
+    const [mealPackages] = await mealPackage.findById(user_package.package_id);
+    const meals_per_day = mealPackages[0].meals_per_day;
+
+    // === Xác định allowed time để đặt toàn bộ tuần ===
+    const allowedStart = weekStart.clone().add(5, "days").hour(12).minute(30); // Thứ 7 12:30
+    const allowedEnd = allowedStart.clone().add(1, "days").hour(12).minute(0); // Chủ nhật 12:00
+
+    const [userOrdersInWeek] = await userMealSelection.findByUserIdAndWeek(
+      req.session.user.id,
+      weekStartStr
+    );
+
+    // === Tạo menuByDay ===
+    const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+    const menuByDay = {};
+    days.forEach((day) => {
+      menuByDay[day] = {
+        1: items.find((i) => i.day_of_week === day && i.meal_slot == 1),
+        2: items.find((i) => i.day_of_week === day && i.meal_slot == 2),
+      };
+    });
+
+    // === Tạo dayDates và cartFromDb ===
+    const dayDates = days.map((_, idx) =>
+      weekStart.clone().add(idx, "days").format("YYYY-MM-DD")
+    );
+
+    const start_date_moment = moment(user_package.start_date);
+
+    const validMealDates = dayDates.filter((dateStr) => {
+      const day = moment(dateStr, "YYYY-MM-DD");
+      const isAfterStart = day.isSameOrAfter(start_date_moment, "day");
+
+      if (day.isSame(now, "day")) {
+        return now.hour() < 12;
+      }
+
+      return isAfterStart && day.isAfter(now, "day");
+    });
+
+    const cartFromDb = userOrdersInWeek
+      .filter((order) => order.status === "ordered")
+      .flatMap((order) => {
+        const day = moment(order.meal_date).format("YYYY-MM-DD");
+        if (order.selected_slot === "both") {
+          return [
+            { day, slot: 1, meal_id: order.selected_meal_slot1 },
+            { day, slot: 2, meal_id: order.selected_meal_slot2 },
+          ];
+        } else {
+          return [
+            {
+              day,
+              slot: parseInt(order.selected_slot),
+              meal_id:
+                order.selected_slot === "1"
+                  ? order.selected_meal_slot1
+                  : order.selected_meal_slot2,
+            },
+          ];
         }
-        //Lấy món ăn của menu đó
-        const [items] = await dailyMenuItem.findByMenuId(menu.id);
-        const user_package_id = user_package.id;
-        const [mealPackages] = await mealPackage.findById(
-            user_package.package_id
-        );
-        const meals_per_day = mealPackages[0].meals_per_day;
-        let weekStart = moment(menu.week_start_date);
-        const allowedStart = weekStart
-            .clone()
-            .add(5, "days")
-            .hour(12)
-            .minute(30)
-            .second(0)
-            .millisecond(0); // Thứ 7 12:30
-        const allowedEnd = allowedStart
-            .clone()
-            .add(1, "days")
-            .hour(12)
-            .minute(0)
-            .second(0)
-            .millisecond(0); // Chủ nhật 12:00
-        const weekStartStr = weekStart.format("YYYY-MM-DD");
+      });
 
-        // Kiểm tra user đã đặt món trong tuần này chưa
-        const [userOrdersInWeek] = await userMealSelection.findByUserIdAndWeek(
-            req.session.user.id,
-            weekStartStr
-        );
+    // === Tính availableDays ===
+    const availableDays = days.map((dayName, index) => {
+        const date = weekStart.clone().add(index, "days");
+        const dateStr = date.format("YYYY-MM-DD");
 
+        let isAvailable = false;
+        const isAfterStartDate = date.isSameOrAfter(start_date_moment, "day");
 
-        // Group items theo ngày và slot
-        const days = [
-            "Monday",
-            "Tuesday",
-            "Wednesday",
-            "Thursday",
-            "Friday",
-            "Saturday",
-        ];
-        const menuByDay = {};
-        days.forEach((day) => {
-            menuByDay[day] = {
-                1: items.find((i) => i.day_of_week === day && i.meal_slot == 1),
-                2: items.find((i) => i.day_of_week === day && i.meal_slot == 2),
-            };
-        });
-        // Tạo mảng dayDates cho từng ngày trong tuần
-        const dayDates = days.map((_, idx) =>
-            weekStart.clone().add(idx, "days").format("YYYY-MM-DD")
-        );
+        if (now.isBetween(allowedStart, allowedEnd)) {
+            // Trong khung đặt món (Thứ 7 12:30 - CN 12:00) → cho đặt toàn bộ tuần
+            isAvailable = isAfterStartDate;
+        } else {
+            // Ngoài khung → chỉ cho đặt món trước 12h trưa của ngày hôm trước
+            const deadline = date.clone().subtract(1, 'days').hour(12).minute(0).second(0);
+            isAvailable = isAfterStartDate && now.isBefore(deadline);
+        }
 
-        // Xác định danh sách ngày hợp lệ dựa vào start_date và now
-        const start_date_moment = moment(user_package.start_date);
+        return {
+            name: dayName,
+            date: dateStr,
+            formatted: date.format("DD/MM/YYYY"),
+            isAvailable,
+        };
+        }).filter((d) => d.isAvailable);
 
-        const validMealDates = dayDates.filter(dateStr => {
-            const day = moment(dateStr, "YYYY-MM-DD");
-            const isAfterStart = day.isSameOrAfter(moment(user_package.start_date), 'day');
-            // Nếu ngày ăn là hôm nay → phải sau 12h trưa mới khóa
-            if (day.isSame(now, 'day')) {
-                return now.hour() < 12; // còn trước 12h trưa thì còn đặt được
-            }
-            return isAfterStart && day.isAfter(now, 'day'); // chỉ ngày tương lai mới hợp lệ
-        });
-
-        // Tạo mảng cart ban đầu từ dữ liệu đã đặt trong DB
-        const cartFromDb = userOrdersInWeek
-            .filter(order => order.status === 'ordered')
-            .flatMap(order => {
-                const day = moment(order.meal_date).format("YYYY-MM-DD");
-                if (order.selected_slot === "both") {
-                return [
-                    {
-                    day,
-                    slot: 1,
-                    meal_id: order.selected_meal_slot1
-                    },
-                    {
-                    day,
-                    slot: 2,
-                    meal_id: order.selected_meal_slot2
-                    }
-                ];
-                } else {
-                return [{
-                    day,
-                    slot: parseInt(order.selected_slot),
-                    meal_id: order.selected_slot === "1"
-                    ? order.selected_meal_slot1
-                    : order.selected_meal_slot2
-                }];
-            }   
-            });
-        const nowMoment = moment.tz(now.format(), "Asia/Ho_Chi_Minh");
-        const availableDays = days.map((dayName, index) => {
-            const date = moment(weekStartStr).add(index, 'days'); // ngày thực tế
-            const diffDays = date.diff(nowMoment.clone().startOf("day"), 'days');
-            const isBeforeStart = date.isBefore(start_date_moment, 'day');
-
-            let isValid = false;
-
-            if (diffDays > 1) {
-                isValid = true; // các ngày xa hơn ngày mai luôn hợp lệ
-            } else if (diffDays === 1) {
-                // ngày mai → hợp lệ nếu hiện tại < 12h
-                isValid = nowMoment.hour() < 12;
-            }
-
-            return {
-                name: dayName,
-                date: date.format("YYYY-MM-DD"),
-                formatted: date.format("DD/MM/YYYY"),
-                isAvailable: !isBeforeStart && isValid,
-            };
-        }).filter(d => d.isAvailable);
-
-        // Truyền thêm biến để EJS disable checkbox nếu quá hạn từng ngày
-        res.render("user/datmon", {
-            user_package,
-            user_package_id,
-            menuByDay,
-            days,
-            dayDates,
-            now,
-            allowedStart,
-            allowedEnd,
-            meals_per_day,
-            userOrdersInWeek,
-            pageTitle: "Đặt món",
-            moment,
-            remaining_days: user_package.remaining_days,
-            weekStartStr,
-            validMealDates,
-            start_date_moment,
-            cartFromDb,
-            availableDays,
-        });
-    } catch (err) {
-        console.error(err);
-        res.redirect("/");
-    }
+    // === Render view ===
+    res.render("user/datmon", {
+      user_package_id,
+      menuByDay,
+      days,
+      dayDates,
+      now,
+      allowedStart,
+      allowedEnd,
+      meals_per_day,
+      userOrdersInWeek,
+      pageTitle: "Đặt món",
+      moment,
+      remaining_meals: user_package.remaining_meals,
+      weekStartStr,
+      validMealDates,
+      start_date_moment,
+      cartFromDb,
+      availableDays,
+      isAuthenticated: req.session.isLoggedIn,
+    });
+  } catch (err) {
+    console.error(err);
+    res.redirect("/");
+  }
 };
 
 exports.postDatMon = async (req, res) => {
   try {
     const { cart, user_package_id } = req.body;
     const user_id = req.session.user.id;
+    const user = req.session.user;
 
     const currentWeekStartDate = moment().tz("Asia/Ho_Chi_Minh").startOf("isoWeek").format("YYYY-MM-DD");
     const [userOrdersInWeek] = await userMealSelection.findByUserIdAndWeek(user_id, currentWeekStartDate);
@@ -517,6 +512,11 @@ exports.postDatMon = async (req, res) => {
 
       updatedDays.push(meal_date);
 
+      const newMealCount = selected_slot === "both" ? 2 : 1;
+      const oldMealCount = existing
+        ? (existing.selected_slot === "both" ? 2 : 1)
+        : 0;
+
       if (existing) {
         await userMealSelection.updateByUserIdAndDate({
           user_id,
@@ -526,6 +526,12 @@ exports.postDatMon = async (req, res) => {
           selected_meal_slot2: slot2,
           status: "ordered",
         });
+
+        if (newMealCount > oldMealCount) {
+          await userPackage.reduceRemainingMeals(user_id, newMealCount - oldMealCount);
+        } else if (newMealCount < oldMealCount) {
+          await userPackage.increaseRemainingMeals(user_id, oldMealCount - newMealCount);
+        }
 
         await mealChangeLog.create({
           user_meal_selection_id: existing.id,
@@ -541,6 +547,8 @@ exports.postDatMon = async (req, res) => {
           selected_meal_slot2: slot2,
         });
 
+        await userPackage.reduceRemainingMeals(user_id, newMealCount);
+
         await mealChangeLog.create({
           user_meal_selection_id: insertResult.insertId,
           change_type: "initial",
@@ -551,15 +559,78 @@ exports.postDatMon = async (req, res) => {
     // ===== STEP 3: CANCEL DAYS NO LONGER SELECTED =====
     const updatedSet = new Set(updatedDays);
     for (const order of userOrdersInWeek) {
-        const day = moment(order.meal_date).format("YYYY-MM-DD");
-        if (!updatedSet.has(day) && order.status === "ordered") {
-            await userMealSelection.updateStatusCanceledbyId(order.id);
-            await mealChangeLog.create({
-            user_meal_selection_id: order.id,
-            change_type: "cancel",
-            });
-        }
+      const day = moment(order.meal_date).format("YYYY-MM-DD");
+      if (!updatedSet.has(day) && order.status === "ordered") {
+        const slotCount = order.selected_slot === "both" ? 2 : 1;
+
+        await userMealSelection.updateStatusCanceledbyId(order.id);
+        await userPackage.increaseRemainingMeals(user_id, slotCount);
+
+        await mealChangeLog.create({
+          user_meal_selection_id: order.id,
+          change_type: "cancel",
+        });
+      }
     }
+
+    const momentTz = require("moment-timezone");
+    const daysMap = {
+      "Monday": "Thứ Hai",
+      "Tuesday": "Thứ Ba",
+      "Wednesday": "Thứ Tư",
+      "Thursday": "Thứ Năm",
+      "Friday": "Thứ Sáu",
+      "Saturday": "Thứ Bảy"
+    };
+
+    // Lấy lại danh sách đã đặt mới nhất sau cập nhật
+    const [finalOrders] = await userMealSelection.findByUserIdAndWeek(user_id, currentWeekStartDate);
+
+    let tableRows = "";
+    for (const order of finalOrders.filter(o => o.status === "ordered")) {
+      const dayName = momentTz(order.meal_date).tz("Asia/Ho_Chi_Minh").format("dddd");
+      const dayVN = daysMap[dayName] || dayName;
+      const dayStr = momentTz(order.meal_date).tz("Asia/Ho_Chi_Minh").format("DD/MM/YYYY");
+      const meal1 = order.meal_slot1_name || "";
+      const meal2 = order.meal_slot2_name || "";
+
+      tableRows += `
+        <tr>
+          <td style="padding: 6px 12px; border: 1px solid #ddd;">${dayVN}, ${dayStr}</td>
+          <td style="padding: 6px 12px; border: 1px solid #ddd;">${meal1}</td>
+          <td style="padding: 6px 12px; border: 1px solid #ddd;">${meal2}</td>
+        </tr>`;
+    }
+
+    const htmlContent = `
+      <div style="font-family: Arial, sans-serif; line-height: 1.6;">
+        <h2>🎉 Xin chúc mừng ${user.name}!</h2>
+        <p>Bạn đã đặt món thành công cho tuần bắt đầu từ <strong>${moment(currentWeekStartDate).format("DD/MM/YYYY")}</strong>.</p>
+        <p>Dưới đây là thực đơn của bạn:</p>
+        <table style="border-collapse: collapse; width: 100%; margin-top: 10px; font-size: 14px;">
+          <thead>
+            <tr style="background-color: #f8f8f8;">
+              <th style="padding: 8px 12px; border: 1px solid #ccc;">📅 Ngày</th>
+              <th style="padding: 8px 12px; border: 1px solid #ccc;">🍽️ Món 1</th>
+              <th style="padding: 8px 12px; border: 1px solid #ccc;">🥗 Món 2</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${tableRows}
+          </tbody>
+        </table>
+        <p style="margin-top: 16px;">Chúc bạn một tuần thật ngon miệng và khỏe mạnh cùng Diet Deli! 💪</p>
+        <p style="font-size: 12px; color: #888;">
+          Đây là email tự động từ hệ thống Diet Deli. Vui lòng không phản hồi email này.
+        </p>
+      </div>
+    `;
+
+    await sendEmail(
+      user.email,
+      "🎉 Đặt món thành công – Cùng khám phá thực đơn của bạn nào!",
+      htmlContent
+    );
 
     res.status(200).json({ message: "Đặt món thành công!" });
   } catch (err) {
@@ -569,84 +640,87 @@ exports.postDatMon = async (req, res) => {
 };
 
 
-exports.getOrderHistory = async (req, res, next) => {
-    if (!req.session.isLoggedIn) {
-        return res.redirect("/user/login");
-    }
-    try {
-        // Lấy tất cả user_meal_selection của user, group theo week_start_date
-        const [weeks] = await userMealSelection.findWeeksByUserId(
-            req.session.user.id
-        );
 
-        res.render("user/order_history", {
-            pageTitle: "Lịch sử đặt món",
-            isAuthenticated: req.session.isLoggedIn,
-            weeks, // [{ week_start_date: '2024-05-13' }, ...]
-            moment,
-            capitaliseVN,
-        });
-    } catch (err) {
-        console.error(err);
-        res.redirect("/user/account");
-    }
-};
 exports.getOrderHistoryDetail = async (req, res, next) => {
     if (!req.session.isLoggedIn) {
         return res.redirect("/user/login");
     }
-    const { week_start_date } = req.params;
     try {
-        // Lấy các order của user trong tuần này
-        const [orders] = await userMealSelection.findByUserIdAndWeek(
+        const { week_start_date } = req.params;
+        const [weeks_data] = await userMealSelection.findWeeksByUserId(
+                req.session.user.id
+            );
+        const weeks = weeks_data[0];
+        const [user_package_data] = await userPackage.findActiveByUserId(
+            req.session.user.id
+        );
+        const user_package = user_package_data[0];
+        const [userOrdersInWeek] = await userMealSelection.findByUserIdAndWeek(
             req.session.user.id,
             week_start_date
         );
+        const selectionIds = userOrdersInWeek.map(d => d.id);
+        const [changeLogs] = await mealChangeLog.findLatestLogsForSelectionIds(selectionIds);
+        const changeLogMap = new Map();
+        changeLogs.forEach(log => {
+          changeLogMap.set(log.user_meal_selection_id, log.changed_at);
+        }); 
+        let structuredWeek = [];
+        for (let i = 0; i < 6; i++) {
+            const day = moment(week_start_date).add(i, "days");
+            const dateStr = day.format("YYYY-MM-DD");
+            const order = userOrdersInWeek.find((o) => moment(o.meal_date).format("YYYY-MM-DD") === dateStr);
 
-        // Lấy changed_at mới nhất cho từng order
-        for (const order of orders) {
-            if (order.selected_meal_slot1) {
-                const [meal1] = await meal.findById(order.selected_meal_slot1);
-                order.meal1 = meal1[0];
+            const isBeforeStart = day.isBefore(moment(user_package.start_date), "day");
+            const isAfterEnd = day.isAfter(moment(user_package.end_date), "day");
+
+            let meals = [];
+                if (order) {
+                    if (["1", "both"].includes(order.selected_slot) && order.meal_slot1_name) {
+                    meals.push(order.meal_slot1_name);
+                }
+                if (["2", "both"].includes(order.selected_slot) && order.meal_slot2_name) {
+                    meals.push(order.meal_slot2_name);
+                }
             }
-            if (order.selected_meal_slot2) {
-                const [meal2] = await meal.findById(order.selected_meal_slot2);
-                order.meal2 = meal2[0];
-            }
 
-            // Lấy changed_at mới nhất từ meal_change_logs
-            const [changeLog] = await db.query(
-                `SELECT MAX(changed_at) AS latest_changed_at 
-                 FROM meal_change_logs 
-                 WHERE user_meal_selection_id = ?`,
-                [order.id]
-            );
-            order.changed_at = changeLog[0].latest_changed_at || order.created_at;
-
-            // Kiểm tra quyền sửa/xóa
-            const mealDate = moment.tz(order.meal_date, "YYYY-MM-DD", "Asia/Ho_Chi_Minh");
-            const cutoff = mealDate.clone().subtract(1, "days").hour(12).minute(0);
             const now = moment();
-            order.canEditDelete = now.isBefore(cutoff);
-        }
-        console.log("Orders for week:", orders);
-        const isCurrentWeek = moment()
-            .tz("Asia/Ho_Chi_Minh")
-            .isBetween(
-                moment.tz(week_start_date, "YYYY-MM-DD", "Asia/Ho_Chi_Minh"),
-                moment.tz(week_start_date, "YYYY-MM-DD", "Asia/Ho_Chi_Minh").clone().add(6, "days"),
-                null,
-                "[]"
+            
+            const isWeekendBatchTime =
+                (now.isoWeekday() === 6 && now.hour() >= 12 && now.minute() >= 30) || // Thứ 7 sau 12:30
+                (now.isoWeekday() === 7 && now.hour() < 12);       
+
+
+            const canEdit =
+                !isBeforeStart &&
+                !isAfterEnd &&
+                (
+                    (
+                    day.isAfter(now, "day") &&
+                    now.isBefore(moment(day).subtract(1, "day").set({ hour: 12, minute: 0 }))
+                    )
+                    || isWeekendBatchTime
             );
+
+            structuredWeek.push({
+                date: dateStr,
+                weekday: day.format("dddd"),
+                meals: meals.length ? meals : null,
+                status: order ? order.status : null,
+                canEdit,
+                outsidePackageStart: isBeforeStart,
+                outsidePackageEnd: isAfterEnd,
+                changed_at: order ? changeLogMap.get(order.id) : null,
+            });
+        }
 
         res.render("user/order_history_detail", {
-            pageTitle: `Chi tiết tuần ${week_start_date}`,
+            pageTitle: `Chi tiết tuần ` + moment(week_start_date).format("DD/MM/YYY"),
             isAuthenticated: req.session.isLoggedIn,
-            orders,
-            week_start_date,
             moment,
             capitaliseVN,
-            isCurrentWeek,
+            structuredWeek,
+            week_start_date,
         });
     } catch (err) {
         console.error(err);

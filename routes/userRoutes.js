@@ -15,7 +15,6 @@ router.get('/datmon', userController.getDatMon);
 router.post('/datmon', userController.postDatMon);
 
 //xem món đã đặt
-router.get('/order-history', userController.getOrderHistory);
 router.get('/order-history/:week_start_date', userController.getOrderHistoryDetail);
 
 router.use((req, res, next) => {

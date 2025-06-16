@@ -48,6 +48,11 @@ module.exports = class User {
       [email, phone, address, password, user_id]
     );
   }
+  
+  static async getByEmailOrPhone(input) {
+    const query = `SELECT * FROM users WHERE email = ? OR phone = ? LIMIT 1`;
+    return await db.execute(query, [input, input]);
+  }
 
   static fetchAll() {
     return db.execute("SELECT * FROM users");
