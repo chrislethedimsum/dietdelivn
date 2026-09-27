@@ -3,8 +3,6 @@ const nodemailer = require('nodemailer');
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: 'info@dietdeli.vn',       // Email từ Google Workspace
-    pass: 'htrncgbobfdidoli',                // App Password (16 ký tự, không có dấu cách)
   }
 });
 
